@@ -3,7 +3,8 @@
     public class Document
     {
         private int id;
-        private string number;
+        public string typeOfDocument; 
+        private string number; 
         protected string authority; 
         protected DateOnly startDate; 
         protected DateOnly endDate; 
