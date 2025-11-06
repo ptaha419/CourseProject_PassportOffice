@@ -6,6 +6,6 @@
         private int taxPayerNumber;
         protected string registrationAddress;
         protected string photo;
-        protected Document documentId;  
+        protected Document document;  
     }
 }

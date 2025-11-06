@@ -8,7 +8,7 @@
         public string phoneNumber;
         public string email;
         public TimeOnly workingHours; 
-        protected Employee employeeId;
+        protected Employee employee;
         public string services; 
     }
 }

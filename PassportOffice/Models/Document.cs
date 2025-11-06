@@ -8,6 +8,6 @@
         protected string authority; 
         protected DateOnly startDate; 
         protected DateOnly endDate;
-        protected Applicant applicantId;
+        protected Applicant applicant;
     }
 }
