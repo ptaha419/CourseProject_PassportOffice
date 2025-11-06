@@ -7,6 +7,7 @@
         private string number; 
         protected string authority; 
         protected DateOnly startDate; 
-        protected DateOnly endDate; 
+        protected DateOnly endDate;
+        protected Applicant applicantId;
     }
 }
