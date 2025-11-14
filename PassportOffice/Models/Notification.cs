@@ -23,7 +23,7 @@ namespace PassportOffice.Models
             this.application = application;
 
             Console.WriteLine($"Отправлено уведомление № {id} по заявлению № {application.GetId()}");
-            Console.WriteLine($"Заявитель: {applicant.name}, Сотрудник: {employee.name}");
+            Console.WriteLine($"Заявитель: {applicant.Surname}, Сотрудник: {employee.Surname}");
             Console.WriteLine($"Заголовок: {Title}\nСообщение: {Text}");
         }
     }
