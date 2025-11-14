@@ -25,6 +25,20 @@
             document = doc;
         }
 
+        public List<Document> Documents { get; set; } = new List<Document>();
+        public void GetAllDocuments()
+        {
+            if (Documents.Count > 0)
+            {
+                foreach (var doc in Documents)
+                    Console.WriteLine(doc);
+            }
+            else
+            {
+                Console.WriteLine("Документы не найдены.");
+            }
+        }
+
         public List<Application> Applications { get; set; } = new List<Application>();
         public void GetListOfApplications()
         {
@@ -38,5 +52,10 @@
                 Console.WriteLine("Заявления не найдены.");
             }
         }
+
+        public void ChangeRegistrationAddress(string NewRegistrationAddress) 
+        {
+            RegistrationAddress = NewRegistrationAddress; 
+        } 
     }
 }
