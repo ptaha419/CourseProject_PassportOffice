@@ -24,5 +24,19 @@
             Photo = photo;
             document = doc;
         }
+
+        public List<Application> Applications { get; set; } = new List<Application>();
+        public void GetListOfApplications()
+        {
+            if (Applications.Count > 0)
+            {
+                foreach (var app in Applications)
+                    Console.WriteLine(app);
+            }
+            else
+            {
+                Console.WriteLine("Заявления не найдены.");
+            }
+        }
     }
 }

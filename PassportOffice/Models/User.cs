@@ -45,6 +45,6 @@ namespace PassportOffice.Models
         public string GetFullName()
         {
             return $"{Surname} {MiddleName} {Name}";
-        }
+        } 
     } 
 }
