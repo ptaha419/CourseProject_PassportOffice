@@ -3,6 +3,6 @@
     public class Employee : User
     {
         public string position;
-        public Department department; 
+        public Department department;  
     }
 }
