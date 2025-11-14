@@ -12,9 +12,17 @@ namespace PassportOffice.Models
         public string Email;
         public TimeOnly WorkingHours; 
         protected Employee employee;
-        public enum services { }
+        public enum Services
+        {
+            IssuingAndReplacingPassport, // Выдача и смена паспорта
+            ForeignPassportProcessing, // Оформление загранпаспорта
+            IssuanceResidencePermit, // Выдача вида на жительство 
+            RegistrationByTemporaryResidence, // Регистрация по месту пребывания 
+            RegistrationByPermanentResidence, // Регистрация по месту жительства 
+            Deregistration // Снятие с регистрационного учёта
+        }
 
-        public List<Employee> Employees { get; set; } = new List<Employee>(); 
+        public HashSet<Services> AvailableServices { get; set; } = new HashSet<Services>();
         public void GetDepartmentInfo()
         {
             Console.WriteLine($"Название: {Name}");
@@ -22,8 +30,14 @@ namespace PassportOffice.Models
             Console.WriteLine($"Телефон: {PhoneNumber}");
             Console.WriteLine($"Email: {Email}");
             Console.WriteLine($"Рабочие часы: {WorkingHours.ToString()}");
+            Console.WriteLine("Доступные услуги:");
+            foreach (var service in AvailableServices)
+            {
+                Console.WriteLine(service);
+            }
         }
 
+        public List<Employee> Employees { get; set; } = new List<Employee>();
         public void GetListOfEmployees()
         {
             if (Employees.Count > 0)
@@ -35,6 +49,6 @@ namespace PassportOffice.Models
             {
                 Console.WriteLine("Сотрудники отдела не найдены.");
             }
-        }
+        } 
     }
 }
