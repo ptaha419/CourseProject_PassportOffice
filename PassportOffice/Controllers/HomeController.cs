@@ -23,6 +23,12 @@ namespace PassportOffice.Controllers
             return View();
         }
 
+        // Обработка события нажатия кнопки "Подать заявление"
+        public ActionResult RedirectToApplicationForm()
+        {
+            return View("../Application/ApplicationForm");
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
