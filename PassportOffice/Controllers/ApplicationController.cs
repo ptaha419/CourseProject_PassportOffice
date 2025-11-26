@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using PassportOffice.Models;
 
 namespace PassportOffice.Controllers
 {
@@ -16,6 +17,28 @@ namespace PassportOffice.Controllers
             return View("AllApplications");
         }
 
+        // GET: ApplicationController/Create
+        [HttpGet]
+        public ActionResult Create()
+        {
+            return View();
+        }
+
+        // POST: ApplicationController/Create
+        [HttpPost]
+        public ActionResult Create(Application app)
+        {
+            if (ModelState.IsValid)
+            {
+                return RedirectToAction("Create");
+            }
+            else
+            {
+                ModelState.AddModelError("", "В заявлении присутствуют ошибки.");
+                return View(app);
+            }
+        }
+
         public ActionResult Index()
         {
             return View();
@@ -25,27 +48,6 @@ namespace PassportOffice.Controllers
         public ActionResult Details(int id)
         {
             return View();
-        }
-
-        // GET: ApplicationController/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: ApplicationController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
         }
 
         // GET: ApplicationController/Edit/5

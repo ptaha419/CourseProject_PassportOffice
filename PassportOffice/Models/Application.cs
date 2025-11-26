@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Security.Cryptography;
 
 namespace PassportOffice.Models
 {
@@ -8,18 +9,37 @@ namespace PassportOffice.Models
         private Applicant applicant;
         public enum TypeOfApplication 
         {
-            IssuingAndReplacingPassport, // Выдача и смена паспорта
-            ForeignPassportProcessing, // Оформление загранпаспорта
-            IssuanceResidencePermit, // Выдача вида на жительство 
-            RegistrationByTemporaryResidence, // Регистрация по месту пребывания 
-            RegistrationByPermanentResidence, // Регистрация по месту жительства 
-            Deregistration // Снятие с регистрационного учёта
+            [Display(Name = "Выдача и замена паспорта")]
+            IssuingAndReplacingPassport,
+
+            [Display(Name = "Оформление загранпаспорта")]
+            ForeignPassportProcessing,
+
+            [Display(Name = "Выдача вида на жительство")]
+            IssuanceResidencePermit,
+
+            [Display(Name = "Регистрация по месту пребывания")]
+            RegistrationByTemporaryResidence,
+
+            [Display(Name = "Регистрация по месту жительства")]
+            RegistrationByPermanentResidence,
+
+            [Display(Name = "Снятие с регистрационного учета")]
+            Deregistration
         }
 
+        [Required(ErrorMessage = "Необходимо выбрать тип заявления")]
         public TypeOfApplication typeOfApplication { get; set; }
+
+        [DataType(DataType.Date)]
+        [Display(Name = "Дата подачи заявления:")]
         public DateOnly StartDate;
+
+        [DataType(DataType.Date)]
         public DateOnly EndDate;
         public string Status;
+
+        [MaxLength(100, ErrorMessage = "Описание должно содержать максимум 100 символов.")]
         public string Description;
         private List<Document> AttachedDocs;
         private Employee employee;
