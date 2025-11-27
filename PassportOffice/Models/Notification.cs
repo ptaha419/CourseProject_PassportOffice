@@ -1,4 +1,6 @@
-﻿using System.Security.Cryptography;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Security.Cryptography;
 using System.Xml.Linq;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -6,12 +8,14 @@ namespace PassportOffice.Models
 {
     public class Notification
     {
-        private int id;
-        private string Title;
-        private string Text;
-        private Applicant applicant;
-        private Employee employee;
-        private Application application;
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        private int Id;
+        private string Title { get; set; }
+        private string Text { get; set; }
+        private Applicant applicant { get; set; }
+        private Employee employee { get; set; }
+        private Application application { get; set; }
 
         public void SendNotification(string Title, string Text, 
             Applicant applicant, Employee employee, Application application) 
@@ -22,7 +26,7 @@ namespace PassportOffice.Models
             this.employee = employee;
             this.application = application;
 
-            Console.WriteLine($"Отправлено уведомление № {id} по заявлению № {application.GetId()}");
+            Console.WriteLine($"Отправлено уведомление № {Id} по заявлению № {application.GetId()}");
             Console.WriteLine($"Заявитель: {applicant.Surname}, Сотрудник: {employee.Surname}");
             Console.WriteLine($"Заголовок: {Title}\nСообщение: {Text}");
         }

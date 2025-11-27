@@ -1,12 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Security.Cryptography;
 
 namespace PassportOffice.Models
 {
     public class Application
     {
-        private int id;
-        private Applicant applicant;
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        private int Id;
+        private Applicant applicant { get; set; }
         public enum TypeOfApplication 
         {
             [Display(Name = "Выдача и замена паспорта")]
@@ -65,7 +68,7 @@ namespace PassportOffice.Models
 
         public int GetId()
         {
-            return id;
+            return Id;
         }
 
         public void ChangeApplicationStatus(string NewStatus)

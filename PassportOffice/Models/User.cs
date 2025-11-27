@@ -1,24 +1,28 @@
-﻿using System.Net;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Net;
 using System.Xml.Linq;
 
 namespace PassportOffice.Models
 {
     public class User
     {
-        private int id;
-        private string Login; 
-        private string Password;
-        public string Surname;
-        public string MiddleName;
-        public string Name;
-        public DateOnly BirthDate;
-        public string Gender;
-        protected string PhoneNumber; 
-        protected string Email;
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        private int Id;
+        private string Login { get; set; }
+        private string Password { get; set; }
+        public string Surname { get; set; }
+        public string MiddleName { get; set; }
+        public string Name { get; set; }
+        public DateOnly BirthDate { get; set; }
+        public string Gender { get; set; }
+        protected string PhoneNumber { get; set; }
+        protected string Email { get; set; }
 
         public User(int id, string Login, string Password, string PhoneNumber, string Email)
         {
-            this.id = id;
+            this.Id = id;
             this.Login = Login;
             this.Password = Password; 
             this.PhoneNumber = PhoneNumber;
@@ -27,12 +31,12 @@ namespace PassportOffice.Models
 
         public int GetId()
         {
-            return id;
+            return Id;
         }
 
         public void GetUserInfo()
         {
-            Console.WriteLine($"ID: {id}");
+            Console.WriteLine($"ID: {Id}");
             Console.WriteLine($"Имя: {Name}"); 
             Console.WriteLine($"Отчество: {MiddleName}"); 
             Console.WriteLine($"Фамилия: {Surname}"); 
@@ -42,9 +46,6 @@ namespace PassportOffice.Models
             Console.WriteLine($"Email: {Email}");
         }
 
-        public string GetFullName()
-        {
-            return $"{Surname} {MiddleName} {Name}";
-        } 
+        public string GetFullName() => $"{Surname} {MiddleName} {Name}";
     } 
 }

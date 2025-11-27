@@ -1,28 +1,32 @@
-﻿using static PassportOffice.Models.Document;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Xml.Linq;
+using static PassportOffice.Models.Document;
 
 namespace PassportOffice.Models
 {
     public class Document
     {
-        private readonly int _id;
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        private readonly int Id;
         public enum TypeOfDocument
         {
             Passport,
             BirthCertificate
         }
-        private readonly TypeOfDocument _documentType;
-        private readonly int _number;
-        protected string Authority;
-        protected DateTime StartDate;
-        protected DateTime EndDate;
+        private readonly TypeOfDocument documentType;
+        private readonly int Number;
+        protected string Authority { get; set; }
+        protected DateTime StartDate { get; set; }
+        protected DateTime EndDate { get; set; }
 
         public Document(int id, TypeOfDocument docType, int number, string auth,
                         DateTime start, DateTime end)
         {
-            _id = id;
-            _documentType = docType;
-            _number = number;
+            Id = id;
+            documentType = docType;
+            Number = number;
             Authority = auth;
             StartDate = start;
             EndDate = end;
@@ -30,17 +34,17 @@ namespace PassportOffice.Models
 
         public TypeOfDocument GetTypeOfDocument()
         {
-            return _documentType;
+            return documentType;
         }
 
         public override string ToString()
         {
-            return $"Тип документа: {_documentType.ToString()}";
+            return $"Тип документа: {documentType.ToString()}";
         }
 
-        public int GetDocumentId(int _id) 
+        public int GetDocumentId(int Id) 
         { 
-            return (_id) ;
+            return (Id) ;
         }
 
         public bool IsValid()

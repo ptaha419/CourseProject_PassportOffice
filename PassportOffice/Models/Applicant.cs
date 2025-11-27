@@ -2,16 +2,17 @@
 {
     public class Applicant : User
     {
-        private string BirthPlace;
-        private int TaxPayerNumber;  // ИНН
-        protected string RegistrationAddress;
-        protected string Photo;
-        protected Document document;
+        private string BirthPlace { get; set; }
+        private int TaxPayerNumber { get; set; }  // ИНН
+        protected string RegistrationAddress { get; set; }
+        protected string Photo { get; set; }
+        public virtual ICollection<Document> Documents { get; set; } = new HashSet<Document>();
+        public virtual ICollection<Application> Applications { get; set; } = new HashSet<Application>();
 
         public Applicant(int id, string login, string password, string phoneNumber, string email,
-                string surname, string middleName, string name, DateOnly birthDate, string gender,
-                string birthPlace, int taxPayerNumber, string registrationAddress, string photo, Document doc)
-        : base(id, login, password, phoneNumber, email)
+                         string surname, string middleName, string name, DateOnly birthDate, string gender,
+                         string birthPlace, int taxPayerNumber, string registrationAddress, string photo)
+            : base(id, login, password, phoneNumber, email)
         {
             Surname = surname;
             MiddleName = middleName;
@@ -22,16 +23,27 @@
             TaxPayerNumber = taxPayerNumber;
             RegistrationAddress = registrationAddress;
             Photo = photo;
-            document = doc;
         }
 
-        public List<Document> Documents { get; set; } = new List<Document>();
+        public void GetApplicantInfo()
+        {
+            Console.WriteLine($"Место рождения: {BirthPlace}");
+            Console.WriteLine($"ИНН: {TaxPayerNumber}");
+            Console.WriteLine($"Адрес регистрации: {RegistrationAddress}");
+            Console.WriteLine($"Фото: {Photo}");
+        }
+
+        public void ChangeRegistrationAddress(string newRegistrationAddress)
+        {
+            RegistrationAddress = newRegistrationAddress;
+        }
+
         public void GetAllDocuments()
         {
-            if (Documents.Count > 0)
+            if (Documents.Any())
             {
                 foreach (var doc in Documents)
-                    Console.WriteLine(doc);
+                    Console.WriteLine(doc.ToString());
             }
             else
             {
@@ -39,23 +51,17 @@
             }
         }
 
-        public List<Application> Applications { get; set; } = new List<Application>();
         public void GetListOfApplications()
         {
-            if (Applications.Count > 0)
+            if (Applications.Any())
             {
                 foreach (var app in Applications)
-                    Console.WriteLine(app);
+                    Console.WriteLine(app.ToString());
             }
             else
             {
                 Console.WriteLine("Заявления не найдены.");
             }
         }
-
-        public void ChangeRegistrationAddress(string NewRegistrationAddress) 
-        {
-            RegistrationAddress = NewRegistrationAddress; 
-        } 
     }
 }
