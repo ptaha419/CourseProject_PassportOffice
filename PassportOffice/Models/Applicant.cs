@@ -3,7 +3,7 @@
     public class Applicant : User
     {
         private string BirthPlace;
-        private int TaxPayerNumber;
+        private int TaxPayerNumber;  // ИНН
         protected string RegistrationAddress;
         protected string Photo;
         protected Document document;

@@ -12,11 +12,11 @@ namespace PassportOffice.Models
             [Display(Name = "Выдача и замена паспорта")]
             IssuingAndReplacingPassport,
 
-            [Display(Name = "Оформление загранпаспорта")]
-            ForeignPassportProcessing,
+            //[Display(Name = "Оформление загранпаспорта")]
+            //ForeignPassportProcessing,
 
-            [Display(Name = "Выдача вида на жительство")]
-            IssuanceResidencePermit,
+            //[Display(Name = "Выдача вида на жительство")]
+            //IssuanceResidencePermit,
 
             [Display(Name = "Регистрация по месту пребывания")]
             RegistrationByTemporaryResidence,
