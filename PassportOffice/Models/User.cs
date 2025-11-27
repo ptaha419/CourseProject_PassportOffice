@@ -19,33 +19,5 @@ namespace PassportOffice.Models
         public string Gender { get; set; }
         public string PhoneNumber { get; set; }
         public string Email { get; set; }
-
-        public User(int id, string Login, string Password, string PhoneNumber, string Email)
-        {
-            this.Id = id;
-            this.Login = Login;
-            this.Password = Password; 
-            this.PhoneNumber = PhoneNumber;
-            this.Email = Email;
-        }
-
-        public int GetId()
-        {
-            return Id;
-        }
-
-        public void GetUserInfo()
-        {
-            Console.WriteLine($"ID: {Id}");
-            Console.WriteLine($"Имя: {Name}"); 
-            Console.WriteLine($"Отчество: {MiddleName}"); 
-            Console.WriteLine($"Фамилия: {Surname}"); 
-            Console.WriteLine($"Дата рождения: {BirthDate}"); 
-            Console.WriteLine($"Пол: {Gender}"); 
-            Console.WriteLine($"Телефон: {PhoneNumber}");
-            Console.WriteLine($"Email: {Email}");
-        }
-
-        public string GetFullName() => $"{Surname} {MiddleName} {Name}";
     } 
 }

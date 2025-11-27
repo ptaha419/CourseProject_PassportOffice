@@ -1,10 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Xml.Linq;
 
 namespace PassportOffice.Models
 {
-    public class TypeOfApplication
+    public class TypeOfDocument
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

@@ -15,42 +15,7 @@ namespace PassportOffice.Models
         public string PhoneNumber { get; set; }
         public string Email { get; set; }
         public TimeOnly WorkingHours { get; set; }
-        public ICollection<Employee> EmployeeId { get; set; } = new List<Employee>();
-        public enum Services
-        {
-            IssuingAndReplacingPassport, // Выдача и смена паспорта
-            ForeignPassportProcessing, // Оформление загранпаспорта
-            IssuanceResidencePermit, // Выдача вида на жительство 
-            RegistrationByTemporaryResidence, // Регистрация по месту пребывания 
-            RegistrationByPermanentResidence, // Регистрация по месту жительства 
-            Deregistration // Снятие с регистрационного учёта
-        }
-
-        public void GetDepartmentInfo()
-        {
-            Console.WriteLine($"Название: {Name}");
-            Console.WriteLine($"Адрес: {Address}");
-            Console.WriteLine($"Телефон: {PhoneNumber}");
-            Console.WriteLine($"Email: {Email}");
-            Console.WriteLine($"Рабочие часы: {WorkingHours.ToString()}");
-            Console.WriteLine("Доступные услуги:");
-            //foreach (var service in Services)
-            //{
-            //    Console.WriteLine(service);
-            //}
-        }
-
-        public void GetListOfEmployees()
-        {
-            if (EmployeeId.Count > 0)
-            {
-                foreach (var emp in EmployeeId)
-                    Console.WriteLine(emp);
-            }
-            else
-            {
-                Console.WriteLine("Сотрудники отдела не найдены.");
-            }
-        } 
+        public ICollection<Employee> EmployeeId { get; set; } = new List<Employee>(); 
+        public ICollection<TypeOfApplication> ServiceId { get; set; } = new List<TypeOfApplication>(); 
     }
 }

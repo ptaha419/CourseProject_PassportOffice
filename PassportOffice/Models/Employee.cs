@@ -5,18 +5,6 @@ namespace PassportOffice.Models
     public class Employee : User
     {
         public string Position { get; set; }
-        public Department department { get; set; }
-
-        public Employee(int id, string login, string password, string phoneNumber, string email,
-        string surname, string middleName, string name, DateOnly birthDate, string gender, string position, Department department) : base(id, login, password, phoneNumber, email)
-        {
-            Surname = surname;
-            MiddleName = middleName;
-            Name = name;
-            BirthDate = birthDate;
-            Gender = gender; 
-            Position = position;
-            department = department;
-        }
+        public Department DepartmentId { get; set; }
     }
 }
