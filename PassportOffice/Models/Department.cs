@@ -15,7 +15,7 @@ namespace PassportOffice.Models
         public string PhoneNumber { get; set; }
         public string Email { get; set; }
         public TimeOnly WorkingHours { get; set; }
-        public Employee employee { get; set; }
+        public ICollection<Employee> EmployeeId { get; set; } = new List<Employee>();
         public enum Services
         {
             IssuingAndReplacingPassport, // Выдача и смена паспорта
@@ -26,7 +26,6 @@ namespace PassportOffice.Models
             Deregistration // Снятие с регистрационного учёта
         }
 
-        public HashSet<Services> AvailableServices { get; set; } = new HashSet<Services>();
         public void GetDepartmentInfo()
         {
             Console.WriteLine($"Название: {Name}");
@@ -35,18 +34,17 @@ namespace PassportOffice.Models
             Console.WriteLine($"Email: {Email}");
             Console.WriteLine($"Рабочие часы: {WorkingHours.ToString()}");
             Console.WriteLine("Доступные услуги:");
-            foreach (var service in AvailableServices)
-            {
-                Console.WriteLine(service);
-            }
+            //foreach (var service in Services)
+            //{
+            //    Console.WriteLine(service);
+            //}
         }
 
-        public List<Employee> Employees { get; set; } = new List<Employee>();
         public void GetListOfEmployees()
         {
-            if (Employees.Count > 0)
+            if (EmployeeId.Count > 0)
             {
-                foreach (var emp in Employees)
+                foreach (var emp in EmployeeId)
                     Console.WriteLine(emp);
             }
             else

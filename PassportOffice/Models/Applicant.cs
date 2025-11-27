@@ -6,8 +6,8 @@
         public int TaxPayerNumber { get; set; }  // ИНН
         public string RegistrationAddress { get; set; }
         public string Photo { get; set; }
-        public virtual ICollection<Document> Documents { get; set; } = new HashSet<Document>();
-        public virtual ICollection<Application> Applications { get; set; } = new HashSet<Application>();
+        public virtual ICollection<Document> DocumentId { get; set; } = new List<Document>();
+        public virtual ICollection<Application> ApplicationId { get; set; } = new List<Application>();
 
         public Applicant(int id, string login, string password, string phoneNumber, string email,
                          string surname, string middleName, string name, DateOnly birthDate, string gender,
@@ -40,9 +40,9 @@
 
         public void GetAllDocuments()
         {
-            if (Documents.Any())
+            if (DocumentId.Any())
             {
-                foreach (var doc in Documents)
+                foreach (var doc in DocumentId)
                     Console.WriteLine(doc.ToString());
             }
             else
@@ -53,9 +53,9 @@
 
         public void GetListOfApplications()
         {
-            if (Applications.Any())
+            if (ApplicationId.Any())
             {
-                foreach (var app in Applications)
+                foreach (var app in ApplicationId)
                     Console.WriteLine(app.ToString());
             }
             else
