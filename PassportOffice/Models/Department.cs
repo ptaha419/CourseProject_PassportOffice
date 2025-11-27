@@ -9,13 +9,13 @@ namespace PassportOffice.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        private int Id;
+        public int Id;
         public string Name { get; set; }
         public string Address { get; set; }
         public string PhoneNumber { get; set; }
         public string Email { get; set; }
         public TimeOnly WorkingHours { get; set; }
-        protected Employee employee { get; set; }
+        public Employee employee { get; set; }
         public enum Services
         {
             IssuingAndReplacingPassport, // Выдача и смена паспорта

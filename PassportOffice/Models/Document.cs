@@ -9,17 +9,17 @@ namespace PassportOffice.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        private readonly int Id;
+        public int Id;
         public enum TypeOfDocument
         {
             Passport,
             BirthCertificate
         }
-        private readonly TypeOfDocument documentType;
-        private readonly int Number;
-        protected string Authority { get; set; }
-        protected DateTime StartDate { get; set; }
-        protected DateTime EndDate { get; set; }
+        public TypeOfDocument documentType { get; set; }
+        public int Number { get; set; }
+        public string Authority { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
 
         public Document(int id, TypeOfDocument docType, int number, string auth,
                         DateTime start, DateTime end)

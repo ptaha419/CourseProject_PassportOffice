@@ -10,12 +10,12 @@ namespace PassportOffice.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        private int Id;
-        private string Title { get; set; }
-        private string Text { get; set; }
-        private Applicant applicant { get; set; }
-        private Employee employee { get; set; }
-        private Application application { get; set; }
+        public int Id;
+        public string Title { get; set; }
+        public string Text { get; set; }
+        public Applicant applicant { get; set; }
+        public Employee employee { get; set; }
+        public Application application { get; set; }
 
         public void SendNotification(string Title, string Text, 
             Applicant applicant, Employee employee, Application application) 

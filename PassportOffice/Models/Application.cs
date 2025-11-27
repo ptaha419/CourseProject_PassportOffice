@@ -8,8 +8,8 @@ namespace PassportOffice.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        private int Id;
-        private Applicant applicant { get; set; }
+        public int Id;
+        public Applicant applicant { get; set; }
         public enum TypeOfApplication 
         {
             [Display(Name = "Выдача и замена паспорта")]
@@ -36,17 +36,18 @@ namespace PassportOffice.Models
 
         [DataType(DataType.Date)]
         [Display(Name = "Дата подачи заявления:")]
-        public DateOnly StartDate;
+        public DateOnly StartDate { get; set; }
 
         [DataType(DataType.Date)]
-        public DateOnly EndDate;
-        public string Status;
+        public DateOnly EndDate { get; set; }
+
+        public string Status { get; set; }
 
         [MaxLength(100, ErrorMessage = "Описание должно содержать максимум 100 символов.")]
-        public string Description;
-        private List<Document> AttachedDocs;
-        private Employee employee;
-        private string ApplicationReview;
+        public string Description { get; set; }
+        public List<Document> AttachedDocs { get; set; }
+        public Employee employee { get; set; }
+        public string ApplicationReview { get; set; }
 
         public Application() {}
 

@@ -2,10 +2,10 @@
 {
     public class Applicant : User
     {
-        private string BirthPlace { get; set; }
-        private int TaxPayerNumber { get; set; }  // ИНН
-        protected string RegistrationAddress { get; set; }
-        protected string Photo { get; set; }
+        public string BirthPlace { get; set; }
+        public int TaxPayerNumber { get; set; }  // ИНН
+        public string RegistrationAddress { get; set; }
+        public string Photo { get; set; }
         public virtual ICollection<Document> Documents { get; set; } = new HashSet<Document>();
         public virtual ICollection<Application> Applications { get; set; } = new HashSet<Application>();
 

@@ -9,16 +9,16 @@ namespace PassportOffice.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        private int Id;
-        private string Login { get; set; }
-        private string Password { get; set; }
+        public int Id;
+        public string Login { get; set; }
+        public string Password { get; set; }
         public string Surname { get; set; }
         public string MiddleName { get; set; }
         public string Name { get; set; }
         public DateOnly BirthDate { get; set; }
         public string Gender { get; set; }
-        protected string PhoneNumber { get; set; }
-        protected string Email { get; set; }
+        public string PhoneNumber { get; set; }
+        public string Email { get; set; }
 
         public User(int id, string Login, string Password, string PhoneNumber, string Email)
         {
