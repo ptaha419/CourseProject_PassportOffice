@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using PassportOffice.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -86,30 +87,34 @@ namespace PassportOffice.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(User model)
         {
-            if (ModelState.IsValid && !(await IsEmailExists(model.Email)))
+            if (ModelState.IsValid)
             {
-                using (var md5Hash = MD5.Create())
+                if (await IsEmailExists(model.Email))
                 {
-                    byte[] data = md5Hash.ComputeHash(Encoding.UTF8.GetBytes(model.Password));
-                    StringBuilder sBuilder = new StringBuilder();
-
-                    for (int i = 0; i < data.Length; i++)
-                        sBuilder.Append(data[i].ToString("x2"));
-
-                    model.Password = sBuilder.ToString(); // Хешируем пароль перед сохранением
+                    ModelState.AddModelError("", "Пользователь с таким email уже существует.");
+                    return View("RegistrationForm", model);
                 }
 
-                _context.Add(model);
-                await _context.SaveChangesAsync();
+                model.Password = GetMd5Hash(model.Password);
 
-                return RedirectToAction(nameof(Login)); // Перенаправляем на форму входа после успешной регистрации
+                try
+                {
+                    Debug.WriteLine($"Регистрация пользователя: {model.Name}, {model.Email}, {model.Password}");
+                    _context.Users.Add(model);
+                    await _context.SaveChangesAsync();
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", $"Ошибка при сохранении в базу: {ex.Message}. Стэк-трейс: {ex.StackTrace}");
+                    return View("RegistrationForm", model);
+                }
+
+                return RedirectToAction("Login");
             }
 
-            ModelState.AddModelError("", "Ошибка регистрации.");
-            return View("RegistrationForm", model); // Возвращаемся обратно на регистрацию с ошибкой
+            return View("RegistrationForm", model);
         }
 
-        // Пример обработки выхода из системы
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);

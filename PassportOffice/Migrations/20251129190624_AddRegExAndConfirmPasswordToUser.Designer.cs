@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PassportOffice.Models;
 
@@ -11,9 +12,11 @@ using PassportOffice.Models;
 namespace PassportOffice.Migrations
 {
     [DbContext(typeof(WebAppDbContext))]
-    partial class WebAppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251129190624_AddRegExAndConfirmPasswordToUser")]
+    partial class AddRegExAndConfirmPasswordToUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -177,23 +180,6 @@ namespace PassportOffice.Migrations
                     b.ToTable("Notifications");
                 });
 
-            modelBuilder.Entity("PassportOffice.Models.Role", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Role");
-                });
-
             modelBuilder.Entity("PassportOffice.Models.TypeOfApplication", b =>
                 {
                     b.Property<int>("Id")
@@ -277,16 +263,11 @@ namespace PassportOffice.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<int>("RoleId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Surname")
                         .IsRequired()
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("RoleId");
 
                     b.ToTable("Users");
 
@@ -414,17 +395,6 @@ namespace PassportOffice.Migrations
                         .HasForeignKey("DepartmentId");
                 });
 
-            modelBuilder.Entity("PassportOffice.Models.User", b =>
-                {
-                    b.HasOne("PassportOffice.Models.Role", "Role")
-                        .WithMany("Users")
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Role");
-                });
-
             modelBuilder.Entity("PassportOffice.Models.Employee", b =>
                 {
                     b.HasOne("PassportOffice.Models.Department", "Department")
@@ -446,11 +416,6 @@ namespace PassportOffice.Migrations
                     b.Navigation("Employees");
 
                     b.Navigation("Services");
-                });
-
-            modelBuilder.Entity("PassportOffice.Models.Role", b =>
-                {
-                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("PassportOffice.Models.Applicant", b =>
