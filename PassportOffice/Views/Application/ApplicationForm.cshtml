@@ -8,13 +8,13 @@
 <div class="text-center">
     <h1 class="display-4">Подать заявление</h1> 
 
-    <div class="row">
+@*     <div class="row">
         @using (Html.BeginForm("Create", "Application", FormMethod.Post))
         {
             <div class="form-group">
                 @Html.LabelFor(model => model.TypeOfApplicationId)
                 @Html.DropDownListFor(model => model.TypeOfApplicationId, Enum
-                    .GetValues(typeof(PassportOffice.Models.Application.TypeOfApplication))
+                    .GetValues(typeof(PassportOffice.Models.TypeOfApplication))
                     .Cast<PassportOffice.Models.Application.TypeOfApplication>()
                     .Select(x => new SelectListItem { 
                         Text = x.ToString(), Value = ((int)x).ToString() 
@@ -29,7 +29,7 @@
             <div class="form-group">
                 @Html.LabelFor(model => model.Description)
                 @Html.TextAreaFor(model => model.Description)
-            </div>
+            </div> *@
 
             <button type="submit">Отправить заявление</button>
         }

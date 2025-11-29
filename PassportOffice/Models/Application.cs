@@ -8,25 +8,32 @@ namespace PassportOffice.Models
     {
         [Key]
         public int Id { get; set; }
-        [Required]
-        [ForeignKey("ApplicantId")]
-        public Applicant? Applicant { get; set; }
+
+        // Внешний ключ на заявителя
+        [ForeignKey(nameof(Applicant))]
         public int ApplicantId { get; set; }
-        [Required]
-        [ForeignKey("TypeOfApplicationId")]
-        public TypeOfApplication? TypeOfApplication { get; set; }
+        public virtual Applicant Applicant { get; set; }
+
+        // Внешний ключ на вид обращения
+        [ForeignKey(nameof(TypeOfApplication))]
         public int TypeOfApplicationId { get; set; }
+        public virtual TypeOfApplication TypeOfApplication { get; set; }
+
         [Required]
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public string Status { get; set; }
         [Required]
         public string Description { get; set; }
-        [Required]
-        public ICollection<Document> AttachedDocId { get; set; } = new List<Document>();
-        [ForeignKey("EmployeeId")]
-        public Employee? Employee { get; set; }
+
+        // Коллекция документов
+        public virtual ICollection<Document> AttachedDocuments { get; set; } = new List<Document>();
+
+        // Внешний ключ на сотрудника
+        [ForeignKey(nameof(Employee))]
         public int EmployeeId { get; set; }
+        public virtual Employee Employee { get; set; }
+
         public string ApplicationReview { get; set; }
     }
 }

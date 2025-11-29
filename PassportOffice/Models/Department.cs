@@ -17,7 +17,9 @@ namespace PassportOffice.Models
         public string Email { get; set; }
         [Required]
         public TimeOnly WorkingHours { get; set; }
-        public ICollection<Employee> EmployeeId { get; set; } = new List<Employee>();
-        public ICollection<TypeOfApplication> ServiceId { get; set; } = new List<TypeOfApplication>();
+
+        // Навигационные свойства сотрудников и услуг
+        public virtual ICollection<Employee> Employees { get; set; } = new List<Employee>();
+        public virtual ICollection<TypeOfApplication> Services { get; set; } = new List<TypeOfApplication>();
     }
 }

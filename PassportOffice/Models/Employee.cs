@@ -9,9 +9,10 @@ namespace PassportOffice.Models
     {
         [Required]
         public string Position { get; set; }
-        [Required]
-        [ForeignKey("DepartmentId")]
-        public Department? Department { get; set; }
+
+        // Внешний ключ на отдел
+        [ForeignKey(nameof(Department))]
         public int DepartmentId { get; set; }
+        public virtual Department Department { get; set; }
     }
 }

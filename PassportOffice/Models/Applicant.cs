@@ -14,7 +14,9 @@ namespace PassportOffice.Models
         [Required]
         public string RegistrationAddress { get; set; }
         public string Photo { get; set; }
-        public ICollection<Document> DocumentId { get; set; } = new List<Document>();
-        public ICollection<Application> ApplicationId { get; set; } = new List<Application>();
+
+        // Навигационные свойства
+        public virtual ICollection<Document> Documents { get; set; } = new List<Document>();
+        public virtual ICollection<Application> Applications { get; set; } = new List<Application>();
     }
 }

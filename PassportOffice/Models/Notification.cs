@@ -14,17 +14,20 @@ namespace PassportOffice.Models
         public string Title { get; set; }
         [Required]
         public string Text { get; set; }
-        [Required]
-        [ForeignKey("ApplicationId")]
-        public Applicant? Applicant { get; set; }
-        public int ApplicantId { get; set; }
-        [Required]
-        [ForeignKey("EmployeeId")]
-        public Employee? Employee { get; set; }
-        public int EmployeeId { get; set; }
-        [Required]
-        [ForeignKey("ApplicationId")]
-        public Application? Application { get; set; }
+
+        // Внешний ключ на заявку
+        [ForeignKey(nameof(Application))]
         public int ApplicationId { get; set; }
+        public virtual Application Application { get; set; }
+
+        // Внешний ключ на сотрудника
+        [ForeignKey(nameof(Employee))]
+        public int EmployeeId { get; set; }
+        public virtual Employee Employee { get; set; }
+
+        // Внешний ключ на заявителя
+        [ForeignKey(nameof(Applicant))]
+        public int ApplicantId { get; set; }
+        public virtual Applicant Applicant { get; set; }
     }
 }

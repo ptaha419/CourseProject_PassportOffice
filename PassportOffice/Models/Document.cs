@@ -9,10 +9,12 @@ namespace PassportOffice.Models
     {
         [Key]
         public int Id { get; set; }
-        [Required]
-        [ForeignKey("TypeOfDocumentId")]
-        public TypeOfDocument? TypeOfDocument { get; set; }
+
+        // Внешний ключ на тип документа
+        [ForeignKey(nameof(TypeOfDocument))]
         public int TypeOfDocumentId { get; set; }
+        public virtual TypeOfDocument TypeOfDocument { get; set; }
+
         [Required]
         public int Number { get; set; }
         [Required]
