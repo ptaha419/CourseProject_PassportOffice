@@ -9,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<WebAppDbContext>(options =>
-    options.UseMySql("Server=localhost;Database=passport_office;User=root;Password=1825xy;",
+    options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"),
     new MySqlServerVersion(new Version(8, 0, 41))));
 
 var app = builder.Build();

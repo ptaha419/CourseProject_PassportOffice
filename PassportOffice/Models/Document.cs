@@ -8,9 +8,9 @@ namespace PassportOffice.Models
     public class Document
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id;
-        public TypeOfDocument TypeOfDocumentId { get; set; }
+        public TypeOfDocument? TypeOfDocument { get; set; }
+        public int TypeOfDocumentId { get; set; }
         public int Number { get; set; }
         public string Authority { get; set; }
         public DateTime StartDate { get; set; }

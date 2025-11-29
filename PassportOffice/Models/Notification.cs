@@ -9,12 +9,14 @@ namespace PassportOffice.Models
     public class Notification
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id;
         public string Title { get; set; }
         public string Text { get; set; }
-        public Applicant ApplicantId { get; set; }
-        public Employee EmployeeId { get; set; }
-        public Application ApplicationId { get; set; }
+        public Applicant? Applicant { get; set; }
+        public int ApplicantId { get; set; }
+        public Employee? Employee { get; set; }
+        public int EmployeeId { get; set; }
+        public Application? Application { get; set; }
+        public int ApplicationId { get; set; }
     }
 }
