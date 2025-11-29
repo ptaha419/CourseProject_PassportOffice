@@ -8,15 +8,23 @@ namespace PassportOffice.Models
     {
         [Key]
         public int Id;
+        [Required]
+        [ForeignKey("ApplicantId")]
         public Applicant? Applicant { get; set; }
         public int ApplicantId { get; set; }
+        [Required]
+        [ForeignKey("TypeOfApplicationId")]
         public TypeOfApplication? TypeOfApplication { get; set; }
         public int TypeOfApplicationId { get; set; }
+        [Required]
         public DateOnly StartDate { get; set; }
         public DateOnly EndDate { get; set; }
         public string Status { get; set; }
+        [Required]
         public string Description { get; set; }
+        [Required]
         public ICollection<Document> AttachedDocId { get; set; } = new List<Document>();
+        [ForeignKey("EmployeeId")]
         public Employee? Employee { get; set; }
         public int EmployeeId { get; set; }
         public string ApplicationReview { get; set; }
