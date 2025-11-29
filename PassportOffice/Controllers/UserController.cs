@@ -1,99 +1,134 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using PassportOffice.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
+using System.Web;
 
 namespace PassportOffice.Controllers
 {
     public class UserController : Controller
     {
-        // GET: UserController
-        public ActionResult Index()
+        private readonly WebAppDbContext _context;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
+        public UserController(WebAppDbContext context, IHttpContextAccessor httpContextAccessor)
         {
-            return View();
+            _context = context;
+            _httpContextAccessor = httpContextAccessor;
         }
 
-        public ActionResult UserForms()
+        // Метод для проверки существования почтового адреса
+        private async Task<bool> IsEmailExists(string email)
         {
-            return View("UserForms");
+            return await _context.Users.AnyAsync(u => u.Email == email);
         }
 
-        // Обработка события нажатия кнопки "Зарегистрироваться"
-        public ActionResult RedirectToRegistrationForm()
-        {
-            return View("RegistrationForm");
-        }
-
-        // Обработка события нажатия кнопки "Войти в систему"
-        public ActionResult RedirectToLoginForm()
+        //GET: Login 
+        public ActionResult Login()
         {
             return View("LoginForm");
         }
 
-        // GET: UserController/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
-
-        // GET: UserController/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: UserController/Create
+        //POST: Login
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<IActionResult> Login(string login, string password)
         {
-            try
+            if (ModelState.IsValid)
             {
-                return RedirectToAction(nameof(Index));
+                var hashedPassword = GetMd5Hash(password);
+                var user = await _context.Users.FirstOrDefaultAsync(u => u.Login == login && u.Password == hashedPassword);
+
+                if (user != null)
+                {
+                    var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                    new Claim(ClaimTypes.Name, $"{user.Surname} {user.MiddleName} {user.Name}"),
+                    new Claim(ClaimTypes.Role, "User")
+                };
+
+                    var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                    var principal = new ClaimsPrincipal(identity);
+
+                    await HttpContext.SignInAsync(
+                        CookieAuthenticationDefaults.AuthenticationScheme,
+                        principal,
+                        new AuthenticationProperties { ExpiresUtc = DateTime.UtcNow.AddHours(2) });
+
+                    // Сохраняем Id пользователя в сессии
+                    _httpContextAccessor.HttpContext.Session.SetString("UserId", user.Id.ToString());
+
+                    return RedirectToAction(nameof(Index));
+                }
             }
-            catch
-            {
-                return View();
-            }
+
+            ModelState.AddModelError("", "Неверный логин или пароль.");
+            return View("LoginForm");
         }
 
-        // GET: UserController/Edit/5
-        public ActionResult Edit(int id)
+        //GET: Register
+        public ActionResult Register()
         {
-            return View();
+            return View("RegistrationForm");
         }
 
-        // POST: UserController/Edit/5
+        //POST: Register
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<IActionResult> Register(User model)
         {
-            try
+            if (ModelState.IsValid && !(await IsEmailExists(model.Email)))
             {
-                return RedirectToAction(nameof(Index));
+                using (var md5Hash = MD5.Create())
+                {
+                    byte[] data = md5Hash.ComputeHash(Encoding.UTF8.GetBytes(model.Password));
+                    StringBuilder sBuilder = new StringBuilder();
+
+                    for (int i = 0; i < data.Length; i++)
+                        sBuilder.Append(data[i].ToString("x2"));
+
+                    model.Password = sBuilder.ToString(); // Хешируем пароль перед сохранением
+                }
+
+                _context.Add(model);
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction(nameof(Login)); // Перенаправляем на форму входа после успешной регистрации
             }
-            catch
-            {
-                return View();
-            }
+
+            ModelState.AddModelError("", "Ошибка регистрации.");
+            return View("RegistrationForm", model); // Возвращаемся обратно на регистрацию с ошибкой
         }
 
-        // GET: UserController/Delete/5
-        public ActionResult Delete(int id)
+        // Пример обработки выхода из системы
+        public async Task<IActionResult> Logout()
         {
-            return View();
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            _httpContextAccessor.HttpContext.Session.Remove("UserId");
+            return RedirectToAction(nameof(Index));
         }
 
-        // POST: UserController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        // Вспомогательная функция для хэширования пароля
+        private static string GetMd5Hash(string input)
         {
-            try
+            using (MD5 md5Hash = MD5.Create())
             {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
+                byte[] data = md5Hash.ComputeHash(Encoding.UTF8.GetBytes(input));
+                StringBuilder sBuilder = new StringBuilder();
+
+                for (int i = 0; i < data.Length; i++)
+                    sBuilder.Append(data[i].ToString("x2"));
+
+                return sBuilder.ToString();
             }
         }
     }

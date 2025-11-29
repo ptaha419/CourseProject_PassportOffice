@@ -7,16 +7,28 @@ namespace PassportOffice.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly WebAppDbContext _context;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, WebAppDbContext context)
         {
             _logger = logger;
+            _context = context;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
-        }
+            int? userId = HttpContext.Session.GetInt32("UserId");
+
+            if (userId.HasValue)
+            {
+                var currentUser = await _context.Users.FindAsync(userId.Value);
+                return View(currentUser); // передаем текущего пользователя в представление
+            }
+            else
+            {
+                return View(null); // если пользователь не аутентифицирован, передаем null
+            }
+        } 
 
         public IActionResult Privacy()
         {

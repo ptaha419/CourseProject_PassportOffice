@@ -1,13 +1,48 @@
-﻿@{
+﻿@model PassportOffice.Models.User
+
+@inject IHttpContextAccessor HttpContextAccessor
+
+@{
+    Layout = "_Layout";
     ViewData["Title"] = "Главная";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Паспортный стол</h1>
-    <p>Добро пожаловать на главную страницу регистрационной системы "Паспортный стол"!</p>
+<div class="container my-5">
+    @{
+        if (Model != null)
+        {
+            <h1 class="display-4 text-center mb-4">Добро пожаловать, @Model.Name @Model.Surname!</h1>
 
-    @using (Html.BeginForm("RedirectToApplicationForm", "Home", FormMethod.Post))
-    {
-        <input type="submit" value="Подать заявление" />
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="card shadow p-3 mb-5 bg-white rounded">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Создать новое заявление</h5>
+                            <hr />
+                            @using (Html.BeginForm("RedirectToApplicationForm", "Home", FormMethod.Post, new { @class = "mt-3" }))
+                            {
+                                <button type="submit" class="btn btn-lg btn-success w-100">Подать заявление</button>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <h1 class="display-4 text-center mb-4">Добро пожаловать!</h1>
+
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="card shadow p-3 mb-5 bg-white rounded">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Войдите в ваш аккаунт</h5>
+                            <hr />
+                            <a href="@Url.Action("Login", "User")" class="btn btn-lg btn-primary w-100">Войти</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
     }
 </div>
