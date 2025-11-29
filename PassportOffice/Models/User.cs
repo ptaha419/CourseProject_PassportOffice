@@ -8,7 +8,7 @@ namespace PassportOffice.Models
     public class User
     {
         [Key]
-        public int Id;
+        public int Id { get; set; }
         [Required]
         public string Login { get; set; }
         [Required]
@@ -20,7 +20,7 @@ namespace PassportOffice.Models
         [Required]
         public string Name { get; set; }
         [Required]
-        public DateOnly BirthDate { get; set; }
+        public DateTime BirthDate { get; set; }
         [Required]
         public string Gender { get; set; }
         [Required]

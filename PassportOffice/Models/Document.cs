@@ -8,7 +8,7 @@ namespace PassportOffice.Models
     public class Document
     {
         [Key]
-        public int Id;
+        public int Id { get; set; }
         [Required]
         [ForeignKey("TypeOfDocumentId")]
         public TypeOfDocument? TypeOfDocument { get; set; }

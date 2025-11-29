@@ -9,7 +9,7 @@ namespace PassportOffice.Models
     public class Notification
     {
         [Key]
-        public int Id;
+        public int Id { get; set; }
         [Required]
         public string Title { get; set; }
         [Required]

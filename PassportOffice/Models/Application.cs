@@ -7,7 +7,7 @@ namespace PassportOffice.Models
     public class Application
     {
         [Key]
-        public int Id;
+        public int Id { get; set; }
         [Required]
         [ForeignKey("ApplicantId")]
         public Applicant? Applicant { get; set; }
@@ -17,8 +17,8 @@ namespace PassportOffice.Models
         public TypeOfApplication? TypeOfApplication { get; set; }
         public int TypeOfApplicationId { get; set; }
         [Required]
-        public DateOnly StartDate { get; set; }
-        public DateOnly EndDate { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
         public string Status { get; set; }
         [Required]
         public string Description { get; set; }
