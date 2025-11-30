@@ -13,6 +13,11 @@
         {
             <h1 class="display-4 text-center mb-4">Добро пожаловать, @Model.Name @Model.Surname!</h1>
 
+            @if (HttpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
+            {
+                <p class="lead text-center mt-3"><a asp-action="Logout" asp-controller="User" class="btn btn-secondary">Выйти</a></p>
+            }
+
             <div class="row justify-content-center">
                 <div class="col-md-6">
                     <div class="card shadow p-3 mb-5 bg-white rounded">

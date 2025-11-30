@@ -1,6 +1,7 @@
-using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using PassportOffice.Models;
+using System.Diagnostics;
 
 namespace PassportOffice.Controllers
 {
@@ -17,18 +18,18 @@ namespace PassportOffice.Controllers
 
         public async Task<IActionResult> Index()
         {
-            int? userId = HttpContext.Session.GetInt32("UserId");
+            var userEmail = User.Identity?.Name;
 
-            if (userId.HasValue)
+            if (!string.IsNullOrEmpty(userEmail))
             {
-                var currentUser = await _context.Users.FindAsync(userId.Value);
-                return View(currentUser); // передаем текущего пользователя в представление
+                var currentUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
+                return View(currentUser); 
             }
             else
             {
-                return View(null); // если пользователь не аутентифицирован, передаем null
+                return View(null); 
             }
-        } 
+        }
 
         public IActionResult Privacy()
         {

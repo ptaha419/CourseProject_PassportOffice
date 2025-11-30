@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PassportOffice.Models;
+using PassportOffice.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -12,129 +13,108 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Web;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace PassportOffice.Controllers
 {
     public class UserController : Controller
     {
-        private readonly WebAppDbContext _context;
-        private readonly IHttpContextAccessor _httpContextAccessor;
+        private WebAppDbContext _context;
 
-        public UserController(WebAppDbContext context, IHttpContextAccessor httpContextAccessor)
+        public UserController(WebAppDbContext context)
         {
             _context = context;
-            _httpContextAccessor = httpContextAccessor;
         }
 
-        // Метод для проверки существования почтового адреса
-        private async Task<bool> IsEmailExists(string email)
+        //GET: Login
+        [HttpGet]
+        public IActionResult Login()
         {
-            return await _context.Users.AnyAsync(u => u.Email == email);
-        }
-
-        //GET: Login 
-        public ActionResult Login()
-        {
-            return View("LoginForm");
+            return View();
         }
 
         //POST: Login
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(string login, string password)
+        public async Task<IActionResult> Login(LoginModel model)
         {
             if (ModelState.IsValid)
             {
-                var hashedPassword = GetMd5Hash(password);
-                var user = await _context.Users.FirstOrDefaultAsync(u => u.Login == login && u.Password == hashedPassword);
-
+                User user = await _context.Users.FirstOrDefaultAsync(u =>
+                u.Email == model.Email && u.Password == model.Password);
                 if (user != null)
                 {
-                    var claims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                    new Claim(ClaimTypes.Name, $"{user.Surname} {user.MiddleName} {user.Name}"),
-                    new Claim(ClaimTypes.Role, "User")
-                };
+                    await Authenticate(model.Email); // аутентификация
 
-                    var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                    var principal = new ClaimsPrincipal(identity);
-
-                    await HttpContext.SignInAsync(
-                        CookieAuthenticationDefaults.AuthenticationScheme,
-                        principal,
-                        new AuthenticationProperties { ExpiresUtc = DateTime.UtcNow.AddHours(2) });
-
-                    // Сохраняем Id пользователя в сессии
-                    _httpContextAccessor.HttpContext.Session.SetString("UserId", user.Id.ToString());
-
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction("Index", "Home");
                 }
+                ModelState.AddModelError("", "Некорректные логин и/или пароль");
             }
-
-            ModelState.AddModelError("", "Неверный логин или пароль.");
-            return View("LoginForm");
+            return View(model);
         }
 
         //GET: Register
-        public ActionResult Register()
+        [HttpGet]
+        public IActionResult Register()
         {
-            return View("RegistrationForm");
+            return View();
         }
 
         //POST: Register
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(User model)
+        public async Task<IActionResult> Register(RegisterModel model)
         {
             if (ModelState.IsValid)
             {
-                if (await IsEmailExists(model.Email))
+                User user = await _context.Users.FirstOrDefaultAsync(u =>
+                u.Email == model.Email);
+                if (user == null)
                 {
-                    ModelState.AddModelError("", "Пользователь с таким email уже существует.");
-                    return View("RegistrationForm", model);
-                }
+                    // добавляем пользователя в бд
+                    _context.Users.Add(new User
+                    {
+                        Surname = model.Surname,
+                        MiddleName = model.MiddleName,
+                        Name = model.Name,
+                        BirthDate = model.BirthDate,
+                        Gender = model.Gender,
+                        PhoneNumber = model.PhoneNumber,
+                        Email = model.Email,
+                        Password = model.Password, 
+                        RoleId = model.RoleId
+                    });
 
-                model.Password = GetMd5Hash(model.Password);
-
-                try
-                {
-                    Debug.WriteLine($"Регистрация пользователя: {model.Name}, {model.Email}, {model.Password}");
-                    _context.Users.Add(model);
                     await _context.SaveChangesAsync();
-                }
-                catch (Exception ex)
-                {
-                    ModelState.AddModelError("", $"Ошибка при сохранении в базу: {ex.Message}. Стэк-трейс: {ex.StackTrace}");
-                    return View("RegistrationForm", model);
-                }
 
-                return RedirectToAction("Login");
+                    await Authenticate(model.Email);
+
+                    return RedirectToAction("Index", "Home");
+                }
+                else
+                    ModelState.AddModelError("", "Некорректные логин и/или пароль");
             }
+            return View(model);
+        }
 
-            return View("RegistrationForm", model);
+        private async Task Authenticate(string userName)
+        {
+            // создаем один claim
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimsIdentity.DefaultNameClaimType, userName)
+            };
+            // создаем объект ClaimsIdentity
+            ClaimsIdentity id = new ClaimsIdentity(claims, "ApplicationCookie", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
+            // установка аутентификационных куки
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id));
         }
 
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            _httpContextAccessor.HttpContext.Session.Remove("UserId");
-            return RedirectToAction(nameof(Index));
-        }
-
-        // Вспомогательная функция для хэширования пароля
-        private static string GetMd5Hash(string input)
-        {
-            using (MD5 md5Hash = MD5.Create())
-            {
-                byte[] data = md5Hash.ComputeHash(Encoding.UTF8.GetBytes(input));
-                StringBuilder sBuilder = new StringBuilder();
-
-                for (int i = 0; i < data.Length; i++)
-                    sBuilder.Append(data[i].ToString("x2"));
-
-                return sBuilder.ToString();
-            }
+            return RedirectToAction("Login", "User");
         }
     }
 }
