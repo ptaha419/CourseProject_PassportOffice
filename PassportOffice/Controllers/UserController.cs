@@ -7,14 +7,15 @@ using PassportOffice.Models;
 using PassportOffice.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using System.Web;
-using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Web;
+using static PassportOffice.ViewModels.ProfileModel;
 
 namespace PassportOffice.Controllers
 {
@@ -72,7 +73,6 @@ namespace PassportOffice.Controllers
                 u.Email == model.Email);
                 if (user == null)
                 {
-                    // добавляем пользователя в бд
                     _context.Users.Add(new User
                     {
                         Surname = model.Surname,
@@ -115,6 +115,77 @@ namespace PassportOffice.Controllers
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Login", "User");
+        }
+
+        public async Task<IActionResult> GetProfile()
+        {
+            var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!string.IsNullOrEmpty(userId))
+            {
+                var applicant = await _context.Applicants.FirstOrDefaultAsync(u => u.Id.ToString() == userId); // Предположим, что роль заявителя хранится отдельно
+
+                if (applicant != null)
+                {
+                    return View(new ProfileModel
+                    {
+                        Id = applicant.Id,
+                        Surname = applicant.Surname,
+                        MiddleName = applicant.MiddleName,
+                        Name = applicant.Name,
+                        BirthDate = applicant.BirthDate,
+                        Gender = applicant.Gender,
+                        PhoneNumber = applicant.PhoneNumber,
+                        Email = applicant.Email,
+                        BirthPlace = applicant.BirthPlace,
+                        TaxPayerNumber = applicant.TaxPayerNumber,
+                        RegistrationAddress = applicant.RegistrationAddress,
+                        Photo = applicant.Photo
+                    });
+                }
+            }
+
+            return RedirectToAction("Login");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateProfile([FromForm] ProfileModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (!string.IsNullOrEmpty(userId))
+                {
+                    var applicant = await _context.Applicants.FirstOrDefaultAsync(u => u.Id.ToString() == userId);
+
+                    if (applicant != null)
+                    {
+                        applicant.Surname = model.Surname;
+                        applicant.MiddleName = model.MiddleName;
+                        applicant.Name = model.Name;
+                        applicant.BirthDate = model.BirthDate;
+                        applicant.Gender = model.Gender;
+                        applicant.PhoneNumber = model.PhoneNumber;
+                        applicant.Email = model.Email;
+                        applicant.BirthPlace = model.BirthPlace;
+                        applicant.TaxPayerNumber = model.TaxPayerNumber;
+                        applicant.RegistrationAddress = model.RegistrationAddress;
+                        applicant.Photo = model.Photo;
+
+                        try
+                        {
+                            await _context.SaveChangesAsync();
+                            TempData["SuccessMessage"] = "Профиль успешно обновлён!";
+                            return RedirectToAction("GetProfile");
+                        }
+                        catch (Exception ex)
+                        {
+                            ModelState.AddModelError("", $"Ошибка при сохранении изменений: {ex.Message}");
+                        }
+                    }
+                }
+            }
+
+            return View(model);
         }
     }
 }

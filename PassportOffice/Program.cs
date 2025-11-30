@@ -22,7 +22,8 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options => // CookieAuthenticationOptions
     {
-        options.LoginPath = "/Account/Login";
+        options.LoginPath = "/User/Login";
+        options.LogoutPath = "/User/Logout";
     }); 
 
 // Добавляем контроллеры MVC
@@ -48,6 +49,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}"); 
 
 app.Run();
