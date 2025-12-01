@@ -15,7 +15,8 @@ namespace PassportOffice.Models
         public DbSet<Application> Applications { get; set; }
         public DbSet<Document> Documents { get; set; }
         public DbSet<TypeOfDocument> TypesOfDocument { get; set; } 
-        public DbSet<TypeOfApplication> TypesOfApplication { get; set; }
+        public DbSet<TypeOfApplication> TypesOfApplication { get; set; } 
+        public DbSet<Status> Statuses { get; set; } 
         public DbSet<Department> Departments { get; set; }
         public DbSet<Notification> Notifications { get; set; }
     }

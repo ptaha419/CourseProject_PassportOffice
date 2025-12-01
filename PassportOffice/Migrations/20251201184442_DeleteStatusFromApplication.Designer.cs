@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PassportOffice.Models;
 
@@ -11,9 +12,11 @@ using PassportOffice.Models;
 namespace PassportOffice.Migrations
 {
     [DbContext(typeof(WebAppDbContext))]
-    partial class WebAppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251201184442_DeleteStatusFromApplication")]
+    partial class DeleteStatusFromApplication
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -50,9 +53,6 @@ namespace PassportOffice.Migrations
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int>("StatusId")
-                        .HasColumnType("int");
-
                     b.Property<int>("TypeOfApplicationId")
                         .HasColumnType("int");
 
@@ -61,8 +61,6 @@ namespace PassportOffice.Migrations
                     b.HasIndex("ApplicantId");
 
                     b.HasIndex("EmployeeId");
-
-                    b.HasIndex("StatusId");
 
                     b.HasIndex("TypeOfApplicationId");
 
@@ -193,23 +191,6 @@ namespace PassportOffice.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Role");
-                });
-
-            modelBuilder.Entity("PassportOffice.Models.Status", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Statuses");
                 });
 
             modelBuilder.Entity("PassportOffice.Models.TypeOfApplication", b =>
@@ -412,12 +393,6 @@ namespace PassportOffice.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("PassportOffice.Models.Status", "Status")
-                        .WithMany("Applications")
-                        .HasForeignKey("StatusId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("PassportOffice.Models.TypeOfApplication", "TypeOfApplication")
                         .WithMany()
                         .HasForeignKey("TypeOfApplicationId")
@@ -427,8 +402,6 @@ namespace PassportOffice.Migrations
                     b.Navigation("Applicant");
 
                     b.Navigation("Employee");
-
-                    b.Navigation("Status");
 
                     b.Navigation("TypeOfApplication");
                 });
@@ -538,11 +511,6 @@ namespace PassportOffice.Migrations
             modelBuilder.Entity("PassportOffice.Models.Role", b =>
                 {
                     b.Navigation("Users");
-                });
-
-            modelBuilder.Entity("PassportOffice.Models.Status", b =>
-                {
-                    b.Navigation("Applications");
                 });
 
             modelBuilder.Entity("PassportOffice.Models.User", b =>
