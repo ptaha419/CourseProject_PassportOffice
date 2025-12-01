@@ -22,12 +22,12 @@ namespace PassportOffice.Models
 
         // Внешний ключ на сотрудника
         [ForeignKey(nameof(Employee))]
-        public int EmployeeId { get; set; }
+        public Guid EmployeeId { get; set; }
         public virtual Employee Employee { get; set; }
 
         // Внешний ключ на заявителя
         [ForeignKey(nameof(Applicant))]
-        public int ApplicantId { get; set; }
+        public Guid ApplicantId { get; set; }
         public virtual Applicant Applicant { get; set; }
     }
 }

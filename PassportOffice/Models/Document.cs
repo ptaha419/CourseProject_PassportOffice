@@ -24,7 +24,7 @@ namespace PassportOffice.Models
 
         // Внешний ключ на заявителя
         [ForeignKey(nameof(Applicant))]
-        public int ApplicantId { get; set; }
+        public Guid ApplicantId { get; set; }
         public virtual Applicant Applicant { get; set; }
     }
 }

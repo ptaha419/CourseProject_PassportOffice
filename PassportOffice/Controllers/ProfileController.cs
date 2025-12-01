@@ -20,7 +20,8 @@ namespace PassportOffice.Controllers
             _context = context;
         }
 
-        private Guid? GetCurrentUserId() {
+        private Guid? GetCurrentUserId()
+        {
             var sessionValue = HttpContext.Session.GetString("UserId");
 
             if (!string.IsNullOrEmpty(sessionValue) && Guid.TryParse(sessionValue, out var sessionUserId))
@@ -47,7 +48,8 @@ namespace PassportOffice.Controllers
             User user = null;
             Applicant applicant = null;
 
-            if (userId.HasValue) {
+            if (userId.HasValue)
+            {
                 user = await _context.Users.FirstOrDefaultAsync(user => user.Id == userId.Value);
             }
 
@@ -101,8 +103,8 @@ namespace PassportOffice.Controllers
                 BirthDate = user.BirthDate,
                 Gender = user.Gender,
                 PhoneNumber = user.PhoneNumber,
-                Email = user.Email, 
-                BirthPlace = applicant.BirthPlace, 
+                Email = user.Email,
+                BirthPlace = applicant.BirthPlace,
                 TaxPayerNumber = applicant.TaxPayerNumber,
                 RegistrationAddress = applicant.RegistrationAddress,
                 Photo = applicant.Photo
@@ -114,7 +116,7 @@ namespace PassportOffice.Controllers
         // POST: /Profile/Edit 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(ProfileModel model) 
+        public async Task<IActionResult> Edit(ProfileModel model)
         {
             User user = null;
 
@@ -122,7 +124,7 @@ namespace PassportOffice.Controllers
             {
                 user = await _context.Users.FirstOrDefaultAsync(u => u.Id == guid);
             }
-            else 
+            else
             {
                 var currentId = GetCurrentUserId();
 
@@ -143,7 +145,7 @@ namespace PassportOffice.Controllers
             user.BirthDate = model.BirthDate;
             user.Gender = model.Gender;
             user.PhoneNumber = model.PhoneNumber;
-            user.Email = model.Email; 
+            user.Email = model.Email;
 
             await _context.SaveChangesAsync();
 

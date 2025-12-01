@@ -2,10 +2,8 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using PassportOffice.Models; 
+using PassportOffice.Models;
 using System;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,7 +12,7 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<WebAppDbContext>(options =>
     options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"),
-    new MySqlServerVersion(new Version(8, 0, 41))));
+                    new MySqlServerVersion(new Version(8, 0, 41))));
 
 builder.Services.AddHttpContextAccessor();
 
@@ -24,7 +22,10 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     {
         options.LoginPath = "/User/Login";
         options.LogoutPath = "/User/Logout";
-    }); 
+    });
+
+// Добавляем поддержку сеансов
+builder.Services.AddSession();
 
 // Добавляем контроллеры MVC
 builder.Services.AddControllersWithViews();
@@ -35,20 +36,21 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
-app.UseAuthentication();
+// Использование промежуточного ПО для сеансов
+app.UseSession();
 
+app.UseAuthentication();
 app.UseRouting();
 app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}"); 
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();

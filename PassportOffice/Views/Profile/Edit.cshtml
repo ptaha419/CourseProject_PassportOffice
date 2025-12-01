@@ -1,5 +1,31 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model PassportOffice.ViewModels.ProfileModel
+
 @{
+    Layout = "_Layout";
+    ViewData["Title"] = "Редактирование профиля";
 }
+
+<h2>Редактировать профиль</h2>
+
+<form accept-action="Edit" method="post" enctype="multipart/form-data" novalidate>
+    @Html.AntiForgeryToken() 
+    <div>
+        <label asp-for="Surname">Имя</label>
+        <input asp-for="Surname" /> 
+        <span asp-validation-for="Surname" class="text-danger"></span>
+    </div>
+    <div>
+        <label asp-for="Email">Электронная почта</label>
+        <input asp-for="Email" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+    <div>
+        <label asp-for="TaxPayerNumber">ИНН</label>
+        <input asp-for="TaxPayerNumber" />
+        <span asp-validation-for="TaxPayerNumber" class="text-danger"></span>
+    </div> 
+    <div style="margin-top:12px;">
+        <button type="submit" class="btn-success">Сохранить</button> 
+        <a asp-action="Index" class="btn-secondary">Отменить</a>
+    </div>
+</form>

@@ -1,5 +1,21 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model PassportOffice.ViewModels.ProfileModel
+
 @{
-}
+    Layout = "_Layout";
+    ViewData["Title"] = "Профиль";
+} 
+
+<div>
+    <h2>@Model.Surname @Model.MiddleName @Model.Name</h2> 
+    <p><strong>Электронная почта:</strong>@Model.Email</p>
+    <p><strong>Номер телефона:</strong>@Model.PhoneNumber</p> 
+    <p><strong>ИНН:</strong>@(string.IsNullOrEmpty(Model.TaxPayerNumber) ? "-" : Model.TaxPayerNumber)</p> 
+
+    <a asp-action="Edit" class="btn-warning">Редактировать</a> 
+    <a asp-controller="Home" asp-action="Index" class="btn-secondary">На главную</a> 
+
+    @if (TempData["ProfileSaved"] != null)
+    {
+        <p style="margin-top:12px;color:green;">@TempData["ProfileSaved"]</p>    
+    }
+</div>
