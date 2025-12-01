@@ -21,6 +21,11 @@ namespace PassportOffice.Models
         public string Authority { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
+
+        // Внешний ключ на заявителя
+        [ForeignKey(nameof(Applicant))]
+        public int ApplicantId { get; set; }
+        public virtual Applicant Applicant { get; set; }
     }
 }
 
