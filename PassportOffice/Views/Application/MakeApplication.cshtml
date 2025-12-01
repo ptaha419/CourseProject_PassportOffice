@@ -12,20 +12,20 @@
         <div class="row justify-content-md-center">
             <div class="col-md-8 col-lg-6">
                 <div class="form-group mb-3">
-                    <label for="TypeOfApplicationId" class="form-label fw-bold">Тип обращения</label>
+                    <label for="TypeOfApplicationId" class="form-label fw-bold">Тип заявления</label>
                     <select id="TypeOfApplicationId" name="TypeOfApplicationId" class="form-select form-control custom-select">
                     </select>
                     <span asp-validation-for="TypeOfApplicationId" class="text-danger small"></span>
                 </div>
 
                 <div class="form-group mb-3">
-                    <label for="StartDate" class="form-label fw-bold">Дата начала</label>
-                    <input type="date" id="StartDate" name="StartDate" class="form-control" />
+                    <label for="StartDate" class="form-label fw-bold">Дата подачи заявления</label>
+                    <input type="date" id="StartDate" name="StartDate" value="@DateTime.Now.ToString("yyyy-MM-dd")" class="form-control" readonly />
                     <span asp-validation-for="StartDate" class="text-danger small"></span>
                 </div>
 
                 <div class="form-group mb-3">
-                    <label for="Description" class="form-label fw-bold">Описание</label>
+                    <label for="Description" class="form-label fw-bold">Текст заявления</label>
                     <textarea rows="4" cols="50" id="Description" name="Description" class="form-control"></textarea>
                     <span asp-validation-for="Description" class="text-danger small"></span>
                 </div>

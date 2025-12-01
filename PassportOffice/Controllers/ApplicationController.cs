@@ -1,95 +1,67 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using PassportOffice.Models;
+using PassportOffice.ViewModels;
 
 namespace PassportOffice.Controllers
 {
     public class ApplicationController : Controller
     {
-        // GET: ApplicationController   
-        public IActionResult Applicationform()
+        private WebAppDbContext _context;
+        private readonly IEnumerable<Status> _statuses;
+
+        public ApplicationController(WebAppDbContext context)
         {
-            return View("ApplicationForm");
+            _context = context;
+            _statuses = _context.Statuses.ToList();
         }
+
+        [HttpGet]
+        public IActionResult MakeApplication()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> MakeApplication(ApplicationModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                string currentUserEmail = User.Identity.Name; 
+
+                var applicant = await _context.Applicants.FirstOrDefaultAsync(a => a.Email == currentUserEmail);
+
+                if (applicant == null)
+                {
+                    throw new Exception("Заявитель не найден.");
+                }
+
+                var application = new Application
+                {
+                    TypeOfApplicationId = model.TypeOfApplicationId,
+                    StatusId = GetDefaultStatusId(),
+                    ApplicantId = applicant.Id, 
+                    StartDate = model.StartDate,
+                    Description = model.Description
+                };
+
+                _context.Applications.Add(application);
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction("AllApplications", "Application");
+            }
+
+            return View(model);
+        }
+
+        // Статус заявления по умолчанию "Новое"
+        private int GetDefaultStatusId() => _statuses.First().Id;
 
         public IActionResult AllApplications()
         {
             return View("AllApplications");
-        }
-
-        // GET: ApplicationController/Create
-        [HttpGet]
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: ApplicationController/Create
-        [HttpPost]
-        public ActionResult Create(Application app)
-        {
-            if (ModelState.IsValid)
-            {
-                return RedirectToAction("Create");
-            }
-            else
-            {
-                ModelState.AddModelError("", "В заявлении присутствуют ошибки.");
-                return View(app);
-            }
-        }
-
-        public ActionResult Index()
-        {
-            return View();
-        }
-
-        // GET: ApplicationController/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
-
-        // GET: ApplicationController/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: ApplicationController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: ApplicationController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: ApplicationController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
         }
     }
 }

@@ -76,8 +76,8 @@ namespace PassportOffice.Controllers
                     Gender = model.Gender,
                     PhoneNumber = model.PhoneNumber,
                     Email = model.Email,
-                    Password = model.Password,  // Желательно хешировать пароль!
-                    RoleId = model.RoleId,      // Укажите Id роли для заявителя
+                    Password = model.Password,  
+                    RoleId = model.RoleId,      
 
                     // Поля Applicant
                     BirthPlace = model.BirthPlace,
