@@ -1,83 +1,154 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using PassportOffice.Models;
+using PassportOffice.ViewModels;
+using System.Reflection;
+using System.Security.Claims;
+using System.Xml.Linq;
 
 namespace PassportOffice.Controllers
 {
     public class ProfileController : Controller
     {
-        // GET: ProfileController
-        public ActionResult Index()
+        private readonly IWebHostEnvironment _env;
+        private readonly WebAppDbContext _context;
+
+        public ProfileController(IWebHostEnvironment env, WebAppDbContext context)
         {
-            return View();
+            _env = env;
+            _context = context;
         }
 
-        // GET: ProfileController/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
+        private Guid? GetCurrentUserId() {
+            var sessionValue = HttpContext.Session.GetString("UserId");
+
+            if (!string.IsNullOrEmpty(sessionValue) && Guid.TryParse(sessionValue, out var sessionUserId))
+            {
+                return sessionUserId;
+            }
+
+            var claimId = User?.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                        ?? User?.FindFirst("sub")?.Value
+                        ?? User?.Identity?.Name;
+
+            if (!string.IsNullOrEmpty(claimId) && Guid.TryParse(claimId, out var claimUserId))
+            {
+                return claimUserId;
+            }
+
+            return null;
         }
 
-        // GET: ProfileController/Create
-        public ActionResult Create()
+        // GET: /Profile
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var userId = GetCurrentUserId();
+            User user = null;
+            Applicant applicant = null;
+
+            if (userId.HasValue) {
+                user = await _context.Users.FirstOrDefaultAsync(user => user.Id == userId.Value);
+            }
+
+            if (user == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            var profile = new ProfileModel
+            {
+                Id = user.Id.ToString(),
+                Surname = user.Surname,
+                MiddleName = user.MiddleName,
+                Name = user.Name,
+                BirthDate = user.BirthDate,
+                Gender = user.Gender,
+                PhoneNumber = user.PhoneNumber,
+                Email = user.Email,
+                BirthPlace = applicant.BirthPlace,
+                TaxPayerNumber = applicant.TaxPayerNumber,
+                RegistrationAddress = applicant.RegistrationAddress,
+                Photo = applicant.Photo
+            };
+
+            return View(profile);
         }
 
-        // POST: ProfileController/Create
+        // GET: /Profile/Edit 
+        public async Task<IActionResult> Edit()
+        {
+            var userId = GetCurrentUserId();
+            User user = null;
+            Applicant applicant = null;
+
+            if (userId.HasValue)
+            {
+                user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId.Value);
+            }
+
+            if (user == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            var model = new ProfileModel
+            {
+                Id = user.Id.ToString(),
+                Surname = user.Surname,
+                MiddleName = user.MiddleName,
+                Name = user.Name,
+                BirthDate = user.BirthDate,
+                Gender = user.Gender,
+                PhoneNumber = user.PhoneNumber,
+                Email = user.Email, 
+                BirthPlace = applicant.BirthPlace, 
+                TaxPayerNumber = applicant.TaxPayerNumber,
+                RegistrationAddress = applicant.RegistrationAddress,
+                Photo = applicant.Photo
+            };
+
+            return View(model);
+        }
+
+        // POST: /Profile/Edit 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<IActionResult> Edit(ProfileModel model) 
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+            User user = null;
 
-        // GET: ProfileController/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
+            if (Guid.TryParse(model.Id, out var guid))
+            {
+                user = await _context.Users.FirstOrDefaultAsync(u => u.Id == guid);
+            }
+            else 
+            {
+                var currentId = GetCurrentUserId();
 
-        // POST: ProfileController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
+                if (currentId.HasValue)
+                {
+                    user = await _context.Users.FirstOrDefaultAsync(user => user.Id == currentId.Value);
+                }
             }
-            catch
-            {
-                return View();
-            }
-        }
 
-        // GET: ProfileController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
+            if (user == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
 
-        // POST: ProfileController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            user.Surname = model.Surname;
+            user.MiddleName = model.MiddleName;
+            user.Name = model.Name;
+            user.BirthDate = model.BirthDate;
+            user.Gender = model.Gender;
+            user.PhoneNumber = model.PhoneNumber;
+            user.Email = model.Email; 
+
+            await _context.SaveChangesAsync();
+
+            TempData["ProfileSaved"] = "Данные профиля успешно сохранены.";
+            return RedirectToAction("Index");
         }
     }
 }

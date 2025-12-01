@@ -2,13 +2,14 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Net;
 using System.Xml.Linq;
+using Microsoft.AspNetCore.Identity;
 
 namespace PassportOffice.Models
 {
-    public class User
+    public class User : IdentityUser
     {
         [Key]
-        public int Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
 
         [Required]
         public string Surname { get; set; }
