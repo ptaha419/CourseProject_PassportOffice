@@ -1,7 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Net;
-using System.Xml.Linq;
 using Microsoft.AspNetCore.Identity;
 
 namespace PassportOffice.Models
@@ -38,5 +36,8 @@ namespace PassportOffice.Models
         [ForeignKey(nameof(Role))]
         public int RoleId { get; set; }
         public virtual Role Role { get; set; }
+
+        public virtual ICollection<Applicant> Applicants { get; set; } = new List<Applicant>();
+        public virtual ICollection<Employee> Employees { get; set; } = new List<Employee>();
     }
 }

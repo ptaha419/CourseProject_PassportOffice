@@ -1,11 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PassportOffice.Models;
 using PassportOffice.ViewModels;
-using System.Reflection;
 using System.Security.Claims;
-using System.Xml.Linq;
 
 namespace PassportOffice.Controllers
 {
@@ -50,12 +47,19 @@ namespace PassportOffice.Controllers
 
             if (userId.HasValue)
             {
-                user = await _context.Users.FirstOrDefaultAsync(user => user.Id == userId.Value);
+                user = await _context.Users
+                                     .Include(u => u.Applicants)
+                                     .FirstOrDefaultAsync(u => u.Id == userId.Value);
+
+                if (user != null && user.Applicants.Any())
+                {
+                    applicant = user.Applicants.First(); 
+                }
             }
 
-            if (user == null)
+            if (user == null || applicant == null)
             {
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Login", "User"); 
             }
 
             var profile = new ProfileModel

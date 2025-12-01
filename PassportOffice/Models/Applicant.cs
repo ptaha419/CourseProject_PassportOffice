@@ -1,7 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Diagnostics.SymbolStore;
-using System.Security.Cryptography; 
 
 namespace PassportOffice.Models
 {

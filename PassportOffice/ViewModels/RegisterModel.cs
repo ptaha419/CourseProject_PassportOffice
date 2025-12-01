@@ -1,6 +1,4 @@
-﻿using PassportOffice.Models;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace PassportOffice.ViewModels
 {
@@ -9,7 +7,6 @@ namespace PassportOffice.ViewModels
         [Required(ErrorMessage = "Не указана фамилия")]
         public string Surname { get; set; }
 
-        [Required(ErrorMessage = "Не указано отчество")]
         public string MiddleName { get; set; }
 
         [Required(ErrorMessage = "Не указано имя")]
@@ -24,8 +21,8 @@ namespace PassportOffice.ViewModels
         [Required(ErrorMessage = "Не указан номер телефона")]
         public string PhoneNumber { get; set; }
 
-        [Required(ErrorMessage = "Не указан Email")]
-        [RegularExpression(@"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}")]
+        [Required(ErrorMessage = "Не указана электронная почта")]
+        [EmailAddress]
         public string Email { get; set; }
 
         [Required(ErrorMessage = "Не указан пароль")]
@@ -39,5 +36,13 @@ namespace PassportOffice.ViewModels
         [Required(ErrorMessage = "Не выбрана роль пользователя")]
         public int RoleId { get; set; }
 
+        // Новые поля для Applicant
+        public string BirthPlace { get; set; }
+
+        public string TaxPayerNumber { get; set; }
+
+        public string RegistrationAddress { get; set; }
+
+        public string Photo { get; set; }
     }
 }
