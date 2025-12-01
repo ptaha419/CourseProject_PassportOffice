@@ -5,29 +5,27 @@
 }
 
 <div class="container text-center mt-5">
- 
     <h2>Войти в аккаунт</h2>
- 
-    <form asp-action="Login" asp-controller="User" asp-anti-forgery="true">
-        <div class="validation" asp-validation-summary="ModelOnly"></div>
-        <div>
-            <div class="form-group">
-                <label asp-for="Email">Email:</label>
-                <input type="email" asp-for="Email" />
-                <span asp-validation-for="Email" />
-            </div>
-            <div class="form-group">
-                <label asp-for="Password">Пароль:</label>
-                <input type="password" asp-for="Password" />
-                <span asp-validation-for="Password" />
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Войти" class="btn btn-primary" />
+
+    <form asp-action="Login" asp-controller="User" method="post" enctype="multipart/form-data">
+        <div class="row justify-content-md-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="form-group mb-3">
+                    <label for="Email" class="form-label fw-bold">Email</label>
+                    <input type="email" id="Email" name="Email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger small"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="Password" class="form-label fw-bold">Пароль</label>
+                    <input type="password" id="Password" name="Password" class="form-control" />
+                    <span asp-validation-for="Password" class="text-danger small"></span>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">Войти</button>
             </div>
         </div>
     </form>
 
-    <!-- Кнопка для незарегистрированных пользователей -->
-    <br /><br />
-    <a href="@Url.Action("Register", "User")" class="btn btn-link">Ещё нет аккаунта? Зарегистрируйтесь!</a>
+    <p class="mt-3"><a href="@Url.Action("Register", "User")" class="btn btn-link">Нет аккаунта? Зарегистрируйтесь!</a></p>
 </div>
