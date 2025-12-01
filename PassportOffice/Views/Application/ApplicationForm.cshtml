@@ -14,8 +14,8 @@
             <div class="form-group">
                 @Html.LabelFor(model => model.TypeOfApplicationId)
                 @Html.DropDownListFor(model => model.TypeOfApplicationId, Enum
-                    .GetValues(typeof(PassportOffice.Models.TypeOfApplication))
-                    .Cast<PassportOffice.Models.Application.TypeOfApplication>()
+                    .GetValues(typeof(PassportOffice.Models.Application))
+                    .Cast<PassportOffice.Models.Application.TypeOfApplicationId>()
                     .Select(x => new SelectListItem { 
                         Text = x.ToString(), Value = ((int)x).ToString() 
                     }), "Выберите тип заявления")
@@ -29,9 +29,9 @@
             <div class="form-group">
                 @Html.LabelFor(model => model.Description)
                 @Html.TextAreaFor(model => model.Description)
-            </div> *@
+            </div>
 
             <button type="submit">Отправить заявление</button>
         }
-    </div>
+    </div> *@
 </div>

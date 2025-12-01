@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PassportOffice.Models;
 
@@ -11,9 +12,11 @@ using PassportOffice.Models;
 namespace PassportOffice.Migrations
 {
     [DbContext(typeof(WebAppDbContext))]
-    partial class WebAppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251201174321_DeleteApplicantEmployeeIdFromNotification")]
+    partial class DeleteApplicantEmployeeIdFromNotification
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -149,14 +152,8 @@ namespace PassportOffice.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<Guid>("ApplicantId")
-                        .HasColumnType("char(36)");
-
                     b.Property<int>("ApplicationId")
                         .HasColumnType("int");
-
-                    b.Property<Guid>("EmployeeId")
-                        .HasColumnType("char(36)");
 
                     b.Property<string>("Text")
                         .IsRequired()
@@ -168,11 +165,7 @@ namespace PassportOffice.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ApplicantId");
-
                     b.HasIndex("ApplicationId");
-
-                    b.HasIndex("EmployeeId");
 
                     b.ToTable("Notifications");
                 });
@@ -432,29 +425,13 @@ namespace PassportOffice.Migrations
 
             modelBuilder.Entity("PassportOffice.Models.Notification", b =>
                 {
-                    b.HasOne("PassportOffice.Models.Applicant", "Applicant")
-                        .WithMany()
-                        .HasForeignKey("ApplicantId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("PassportOffice.Models.Application", "Application")
                         .WithMany()
                         .HasForeignKey("ApplicationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("PassportOffice.Models.Employee", "Employee")
-                        .WithMany()
-                        .HasForeignKey("EmployeeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Applicant");
-
                     b.Navigation("Application");
-
-                    b.Navigation("Employee");
                 });
 
             modelBuilder.Entity("PassportOffice.Models.TypeOfApplication", b =>

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PassportOffice.Models;
 
@@ -11,9 +12,11 @@ using PassportOffice.Models;
 namespace PassportOffice.Migrations
 {
     [DbContext(typeof(WebAppDbContext))]
-    partial class WebAppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251201172706_DeleteEmployeeIdFromApplication")]
+    partial class DeleteEmployeeIdFromApplication
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -41,9 +44,6 @@ namespace PassportOffice.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<Guid>("EmployeeId")
-                        .HasColumnType("char(36)");
-
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime(6)");
 
@@ -60,8 +60,6 @@ namespace PassportOffice.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ApplicantId");
-
-                    b.HasIndex("EmployeeId");
 
                     b.HasIndex("TypeOfApplicationId");
 
@@ -388,12 +386,6 @@ namespace PassportOffice.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("PassportOffice.Models.Employee", "Employee")
-                        .WithMany("Applications")
-                        .HasForeignKey("EmployeeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("PassportOffice.Models.TypeOfApplication", "TypeOfApplication")
                         .WithMany()
                         .HasForeignKey("TypeOfApplicationId")
@@ -401,8 +393,6 @@ namespace PassportOffice.Migrations
                         .IsRequired();
 
                     b.Navigation("Applicant");
-
-                    b.Navigation("Employee");
 
                     b.Navigation("TypeOfApplication");
                 });
@@ -526,11 +516,6 @@ namespace PassportOffice.Migrations
                     b.Navigation("Applications");
 
                     b.Navigation("Documents");
-                });
-
-            modelBuilder.Entity("PassportOffice.Models.Employee", b =>
-                {
-                    b.Navigation("Applications");
                 });
 #pragma warning restore 612, 618
         }

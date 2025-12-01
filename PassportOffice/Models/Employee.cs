@@ -14,5 +14,7 @@ namespace PassportOffice.Models
         [ForeignKey(nameof(Department))]
         public int DepartmentId { get; set; }
         public virtual Department Department { get; set; }
+
+        public virtual ICollection<Application> Applications { get; set; } = new List<Application>();
     }
 }
