@@ -15,7 +15,8 @@
                     <label for="TypeOfApplicationId" class="form-label fw-bold">Тип заявления</label>
                     @if (ViewBag.Types != null && ((IEnumerable<TypeOfApplication>)ViewBag.Types).Any())
                     {
-                        <select id="TypeOfApplicationId" name="TypeOfApplicationId" class="form-select form-control custom-select">
+                        <select id="TypeOfApplicationId" name="TypeOfApplicationId" class="form-select form-control custom-select" required>
+                            <option value="" disabled selected>Выберите тип заявления...</option>
                             @foreach (var type in (IEnumerable<TypeOfApplication>)ViewBag.Types)
                             {
                                 <option value="@type.Id">@type.Name</option>
