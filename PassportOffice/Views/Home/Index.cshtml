@@ -24,7 +24,7 @@
                         <div class="card-body text-center">
                             <h5 class="card-title">Создать новое заявление</h5>
                             <hr />
-                            @using (Html.BeginForm("RedirectToApplicationForm", "Home", FormMethod.Post, new { @class = "mt-3" }))
+                            @using (Html.BeginForm("MakeApplication", "Application", FormMethod.Get, new { @class = "mt-3" }))
                             {
                                 <button type="submit" class="btn btn-lg btn-success w-100">Подать заявление</button>
                             }

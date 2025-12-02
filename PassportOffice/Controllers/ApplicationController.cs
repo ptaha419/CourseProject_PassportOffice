@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +8,7 @@ using PassportOffice.ViewModels;
 
 namespace PassportOffice.Controllers
 {
+    [Authorize]
     public class ApplicationController : Controller
     {
         private WebAppDbContext _context;
@@ -68,9 +70,22 @@ namespace PassportOffice.Controllers
         // Статус заявления по умолчанию "Новое"
         private int GetDefaultStatusId() => _statuses.First().Id;
 
+        [HttpGet]
+        public IActionResult RedirectToMakeApplication()
+        {
+            return View("MakeApplication");
+        }
+
+        [HttpGet]
         public IActionResult AllApplications()
         {
             return View("AllApplications");
+        } 
+
+        [HttpPost]
+        public IActionResult AllApplications(Application application)
+        {
+            return View();
         }
     }
 }
