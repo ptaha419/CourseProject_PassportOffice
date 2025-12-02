@@ -20,6 +20,5 @@ namespace PassportOffice.Models
 
         // Навигационные свойства сотрудников и услуг
         public virtual ICollection<Employee> Employees { get; set; } = new List<Employee>();
-        public virtual ICollection<TypeOfApplication> Services { get; set; } = new List<TypeOfApplication>();
     }
 }
