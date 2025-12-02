@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PassportOffice.Models;
 using PassportOffice.ViewModels;
@@ -18,8 +19,9 @@ namespace PassportOffice.Controllers
         }
 
         [HttpGet]
-        public IActionResult MakeApplication()
+        public async Task<IActionResult> MakeApplication()
         {
+            await GetTypesOfApplication();
             return View();
         }
 
@@ -53,7 +55,14 @@ namespace PassportOffice.Controllers
                 return RedirectToAction("AllApplications", "Application");
             }
 
+            await GetTypesOfApplication();
             return View(model);
+        }
+
+        private async Task GetTypesOfApplication() 
+        {
+            var types = await _context.TypesOfApplication.ToListAsync();
+            ViewBag.Types = types;
         }
 
         // Статус заявления по умолчанию "Новое"

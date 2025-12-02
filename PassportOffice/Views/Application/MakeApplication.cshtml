@@ -13,8 +13,21 @@
             <div class="col-md-8 col-lg-6">
                 <div class="form-group mb-3">
                     <label for="TypeOfApplicationId" class="form-label fw-bold">Тип заявления</label>
-                    <select id="TypeOfApplicationId" name="TypeOfApplicationId" class="form-select form-control custom-select">
-                    </select>
+                    @if (ViewBag.Types != null && ((IEnumerable<TypeOfApplication>)ViewBag.Types).Any())
+                    {
+                        <select id="TypeOfApplicationId" name="TypeOfApplicationId" class="form-select form-control custom-select">
+                            @foreach (var type in (IEnumerable<TypeOfApplication>)ViewBag.Types)
+                            {
+                                <option value="@type.Id">@type.Name</option>
+                            }
+                        </select>
+                    }
+                    else
+                    {
+                        <select id="TypeOfApplicationId" disabled class="form-select form-control custom-select">
+                            <option>Нет доступных типов заявлений</option>
+                        </select>
+                    }
                     <span asp-validation-for="TypeOfApplicationId" class="text-danger small"></span>
                 </div>
 
