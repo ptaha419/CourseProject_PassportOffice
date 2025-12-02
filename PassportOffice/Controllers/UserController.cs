@@ -11,10 +11,12 @@ namespace PassportOffice.Controllers
     public class UserController : Controller
     {
         private WebAppDbContext _context;
+        private readonly IEnumerable<Role> _roles;
 
         public UserController(WebAppDbContext context)
         {
             _context = context;
+            _roles = _context.Roles.ToList();
         }
 
         //GET: Login
@@ -46,8 +48,9 @@ namespace PassportOffice.Controllers
 
         //GET: Register
         [HttpGet]
-        public IActionResult Register()
+        public async Task<IActionResult> Register() 
         {
+            await GetRoles();
             return View();
         }
 
@@ -93,7 +96,14 @@ namespace PassportOffice.Controllers
 
                 return RedirectToAction("Index", "Home");
             }
+            await GetRoles();
             return View(model);
+        }
+
+        private async Task GetRoles()
+        {
+            var roles = await _context.Roles.ToListAsync();
+            ViewBag.Roles = roles;
         }
 
         private async Task Authenticate(string userName)

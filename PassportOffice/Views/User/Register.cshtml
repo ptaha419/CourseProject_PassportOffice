@@ -70,10 +70,23 @@
                 </div>
 
                 <div class="form-group mb-3">
-                    <label for="RoleId" class="form-label fw-bold">Роль</label>
-                    <select id="RoleId" name="RoleId" class="form-select form-control">
-                        |
-                    </select>
+                    <label for="RoleId" class="form-label fw-bold">Роль пользователя</label>
+                    @if (ViewBag.Roles != null && ((IEnumerable<Role>)ViewBag.Roles).Any())
+                    {
+                        <select id="RoleId" name="RoleId" class="form-select form-control custom-select" required>
+                            <option value="" disabled selected>Выберите роль пользователя...</option>
+                            @foreach (var role in (IEnumerable<Role>)ViewBag.Roles)
+                            {
+                                <option value="@role.Id">@role.Name</option>
+                            }
+                        </select>
+                    }
+                    else
+                    {
+                        <select id="RoleId" disabled class="form-select form-control custom-select">
+                            <option>Нет доступных ролей</option>
+                        </select>
+                    }
                     <span asp-validation-for="RoleId" class="text-danger small"></span>
                 </div>
 

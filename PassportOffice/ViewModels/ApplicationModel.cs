@@ -11,7 +11,11 @@ namespace PassportOffice.ViewModels
         public int StatusId { get; set; }
         [Required(ErrorMessage = "Не указана дата")]
         public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
         [Required(ErrorMessage = "Текст заявления отсутствует")]
         public string Description { get; set; }
+        public virtual ICollection<Document> AttachedDocuments { get; set; } = new List<Document>();
+        public Guid EmployeeId { get; set; }
+        public string ApplicationReview { get; set; }
     }
 }

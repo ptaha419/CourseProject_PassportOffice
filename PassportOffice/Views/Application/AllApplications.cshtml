@@ -10,7 +10,7 @@
 <div class="row">
     <div class="col-md-8">
         @Html.DropDownList("statusId", new SelectList((IEnumerable<Status>)ViewData["Statuses"], "Id", "Name"), "-- Все статусы --")
-        @Html.DropDownList("typeOfApplicationId", new SelectList((IEnumerable<TypeOfApplication>)ViewData["TypesOfApplication"], "Id", "Name"), "-- Все типы заявок --")
+        @Html.DropDownList("typeOfApplicationId", new SelectList((IEnumerable<TypeOfApplication>)ViewData["TypesOfApplication"], "Id", "Name"), "-- Все типы заявлений --")
         <button id="filterButton" class="btn btn-primary">Применить фильтр</button>
     </div>
 </div>

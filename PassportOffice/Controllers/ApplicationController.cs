@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -13,11 +14,17 @@ namespace PassportOffice.Controllers
     {
         private WebAppDbContext _context;
         private readonly IEnumerable<Status> _statuses;
+        private readonly UserManager<User> _userManager;
+        private readonly RoleManager<IdentityRole<int>> _roleManager;
 
-        public ApplicationController(WebAppDbContext context)
+        public ApplicationController(WebAppDbContext context, 
+            UserManager<User> userManager, 
+            RoleManager<IdentityRole<int>> roleManager)
         {
             _context = context;
             _statuses = _context.Statuses.ToList();
+            _userManager = userManager;
+            _roleManager = roleManager;
         }
 
         [HttpGet]
@@ -102,15 +109,96 @@ namespace PassportOffice.Controllers
         }
 
         [HttpGet]
-        public IActionResult Edit()
+        public async Task<IActionResult> Edit(int id)
         {
-            return View("Edit");
+            var application = await _context.Applications.FindAsync(id);
+
+            if (application == null)
+            {
+                return NotFound();
+            }
+
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser == null || !_roleManager.RoleExistsAsync("Сотрудник").Result)
+            {
+                return Forbid();
+            }
+
+            var employeeRole = await _roleManager.FindByNameAsync("Сотрудник");
+            if (employeeRole == null)
+            {
+                return Forbid();
+            }
+
+            bool isEmployee = currentUser.RoleId == employeeRole.Id;
+
+            if (!isEmployee && application.StatusId != 1)
+            {
+                return View("Details", application);
+            }
+
+            return View(application);
         }
 
         [HttpPost]
-        public IActionResult Edit(Application application)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, Application application)
         {
-            return View();
+            if (id != application.Id)
+            {
+                return BadRequest();
+            }
+
+            var existingApplication = await _context.Applications.FindAsync(id);
+
+            if (existingApplication == null)
+            {
+                return NotFound();
+            }
+
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser == null || !_roleManager.RoleExistsAsync("Сотрудник").Result)
+            {
+                return Forbid();
+            }
+
+            var employeeRole = await _roleManager.FindByNameAsync("Сотрудник");
+            if (employeeRole == null)
+            {
+                return Forbid();
+            }
+
+            bool isEmployee = currentUser.RoleId == employeeRole.Id;
+
+            if (!isEmployee && existingApplication.StatusId != 1)
+            {
+                ModelState.AddModelError("", "Вы можете редактировать только те заявления, у которых статус 'Новое'.");
+                return View(existingApplication);
+            }
+
+            if (isEmployee)
+            {
+                existingApplication.EndDate = application.EndDate;
+                existingApplication.ApplicationReview = application.ApplicationReview;
+                existingApplication.StatusId = application.StatusId;
+            }
+            else
+            {
+                existingApplication.Description = application.Description;
+                existingApplication.StartDate = application.StartDate;
+            }
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", $"Ошибка сохранения: {ex.Message}");
+                return View(application);
+            }
+
+            return RedirectToAction(nameof(Index));
         }
     }
 }
