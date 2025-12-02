@@ -100,5 +100,17 @@ namespace PassportOffice.Controllers
 
             return View(applications); 
         }
+
+        [HttpGet]
+        public IActionResult Edit()
+        {
+            return View("Edit");
+        }
+
+        [HttpPost]
+        public IActionResult Edit(Application application)
+        {
+            return View();
+        }
     }
 }
