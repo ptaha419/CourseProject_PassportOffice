@@ -1,10 +1,52 @@
-﻿@model PassportOffice.Models.Application
+﻿@model List<Application>
 
 @{
     Layout = "_Layout";
     ViewData["Title"] = "Заявления";
 }
 
-<div class="container text-center mt-5">
-    <h2>Заявления</h2>
+<h2>Заявления</h2>
+
+<div class="row">
+    <div class="col-md-8">
+        @Html.DropDownList("statusId", new SelectList((IEnumerable<Status>)ViewData["Statuses"], "Id", "Name"), "-- Все статусы --")
+        @Html.DropDownList("typeOfApplicationId", new SelectList((IEnumerable<TypeOfApplication>)ViewData["TypesOfApplication"], "Id", "Name"), "-- Все типы заявок --")
+        <button id="filterButton" class="btn btn-primary">Применить фильтр</button>
+    </div>
 </div>
+
+<table class="table table-striped mt-3">
+    <thead>
+        <tr>
+            <th>№</th>
+            <th>Тип заявления</th>
+            <th>Описание</th>
+            <th>Дата подачи заявления</th>
+            <th>Статус</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var item in Model)
+        {
+            <tr>
+                <td>@item.Id</td>
+                <td>@item.TypeOfApplication.Name</td>
+                <td>@item.Description</td>
+                <td>@item.StartDate.ToShortDateString()</td>
+                <td>@item.Status.Name</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function () {
+    $('#filterButton').click(function () {
+        var statusId = $('#statusId').val();
+        var typeOfApplicationId = $('#typeOfApplicationId').val();
+        
+        window.location.href = '@Url.Action("AllApplications")' + '?statusId=' + statusId + '&typeOfApplicationId=' + typeOfApplicationId;
+    });
+});
+</script>

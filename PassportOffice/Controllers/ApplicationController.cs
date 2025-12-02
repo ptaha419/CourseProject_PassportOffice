@@ -77,15 +77,28 @@ namespace PassportOffice.Controllers
         }
 
         [HttpGet]
-        public IActionResult AllApplications()
+        public async Task<IActionResult> AllApplications(int? statusId, int? typeOfApplicationId)
         {
-            return View("AllApplications");
-        } 
+            IQueryable<Application> applicationsQuery = _context.Applications.AsQueryable();
 
-        [HttpPost]
-        public IActionResult AllApplications(Application application)
-        {
-            return View();
+            // Фильтрация по статусу, если выбран статус
+            if (statusId.HasValue && statusId.Value > 0)
+            {
+                applicationsQuery = applicationsQuery.Where(app => app.StatusId == statusId.Value);
+            }
+
+            // Фильтрация по типу заявки, если выбран тип
+            if (typeOfApplicationId.HasValue && typeOfApplicationId.Value > 0)
+            {
+                applicationsQuery = applicationsQuery.Where(app => app.TypeOfApplicationId == typeOfApplicationId.Value);
+            }
+
+            var applications = await applicationsQuery.Include(app => app.Status).Include(app => app.TypeOfApplication).ToListAsync();
+
+            ViewData["Statuses"] = await _context.Statuses.OrderBy(s => s.Name).ToListAsync(); 
+            ViewData["TypesOfApplication"] = await _context.TypesOfApplication.OrderBy(t => t.Name).ToListAsync(); 
+
+            return View(applications); 
         }
     }
 }
