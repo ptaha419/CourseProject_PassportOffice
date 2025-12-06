@@ -57,8 +57,11 @@
                 <span asp-validation-for="ConfirmPassword" />
             </div>
             <div>
-                <label asp-for="RoleId">Роль:</label><br />
-                <input type="number" asp-for="RoleId" />
+                <label asp-for="RoleId">Роль:</label><br /> 
+                <select asp-for="RoleId" asp-items="ViewBag.Roles" class="form-control select-width"
+                        style="margin-left: auto; margin-right: auto; display: block; width: fit-content;">
+                    <option value="" disabled selected>Выберите роль...</option>
+                </select>
                 <span asp-validation-for="RoleId" />
             </div>
 
@@ -88,33 +91,32 @@
     <a href="@Url.Action("Login", "User")" class="btn btn-link">Уже есть аккаунт? Войдите!</a>
 </div>
 
-<!-- Добавляем скрипт после body, чтобы элементы были загружены перед выполнением -->
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Получаем ссылку на поле RoleId
-        const roleInput = document.querySelector('input[name="RoleId"]');
+        // Получаем ссылку на элемент select (roleId)
+        const roleSelect = document.querySelector('select[name="RoleId"]'); 
 
-        // Элементы поля должности и отдела теперь имеют соответствующие классы
+        // Элементы блока для должности и отдела
         const positionDiv = document.querySelector('.position-div');
         const departmentDiv = document.querySelector('.department-div');
 
         // Функция изменения видимости блоков
         function toggleFields() {
-            let isManager = parseInt(roleInput.value) === 2;
+            let selectedValue = parseInt(roleSelect.value); 
+            let isManager = selectedValue === 2;           // Проверяем, равна ли роль значению 2
 
-            if (isManager) {
-                positionDiv.style.display = 'block';   // Показываем должность
-                departmentDiv.style.display = 'block'; // Показываем отдел
+            if (isManager) {                               
+                positionDiv.style.display = 'block';       
+                departmentDiv.style.display = 'block';     
             } else {
-                positionDiv.style.display = 'none';    // Скрываем должность
-                departmentDiv.style.display = 'none';  // Скрываем отдел
+                positionDiv.style.display = 'none';        
+                departmentDiv.style.display = 'none';
             }
         }
 
-        // Инициализация видимых полей при загрузке страницы
-        toggleFields();
+        // Инициализация видимости при первой загрузке страницы
+        toggleFields();                                    
 
-        // Обработчик события смены значения роли
-        roleInput.addEventListener('change', toggleFields);
+        roleSelect.addEventListener('change', toggleFields); // Отслеживаем смену выбранного пункта
     });
 </script>

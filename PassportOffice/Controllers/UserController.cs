@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PassportOffice.Models;
 using PassportOffice.ViewModels;
@@ -49,7 +50,7 @@ namespace PassportOffice.Controllers
         [HttpGet]
         public async Task<IActionResult> Register()
         {
-            //await GetRoles();
+            await GetRoles();
             return View();
         }
 
@@ -91,7 +92,7 @@ namespace PassportOffice.Controllers
                 else
                     ModelState.AddModelError("", "Некорректные логин и/или пароль");
             }
-            //await GetRoles();
+            await GetRoles();
             return View(model);
         }
 
@@ -110,7 +111,12 @@ namespace PassportOffice.Controllers
 
         private async Task GetRoles()
         {
-            var roles = await _context.Roles.ToListAsync();
+            var roles = await _context.Roles.Select(r => new SelectListItem
+            {
+                Value = r.Id.ToString(),      // Значение (id роли)
+                Text = r.Name                 // Название роли
+            }).ToListAsync();
+
             ViewBag.Roles = roles;
         }
 
