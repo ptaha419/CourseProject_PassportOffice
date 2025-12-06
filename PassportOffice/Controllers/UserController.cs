@@ -75,7 +75,11 @@ namespace PassportOffice.Controllers
                         PhoneNumber = model.PhoneNumber,
                         Email = model.Email,
                         Password = model.Password,
-                        RoleId = model.RoleId
+                        RoleId = model.RoleId,
+
+                        // Если RoleId = 2, то заполняются доп. поля для сотрудника 
+                        Position = model.RoleId == 2 ? model.Position : "",
+                        DepartmentId = model.RoleId == 2 ? model.DepartmentId : default(int),
                     });
 
                     await _context.SaveChangesAsync();

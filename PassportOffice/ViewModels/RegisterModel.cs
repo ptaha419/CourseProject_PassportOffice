@@ -35,5 +35,11 @@ namespace PassportOffice.ViewModels
 
         [Required(ErrorMessage = "Не выбрана роль пользователя")]
         public int RoleId { get; set; }
+
+        [Display(Name = "Должность")]
+        public string Position { get; set; }
+
+        [Display(Name = "Отдел")]
+        public int DepartmentId { get; set; }
     }
 }

@@ -27,7 +27,7 @@
                 <span asp-validation-for="Name" />
             </div>
             <div>
-                <label asp-for="BirthDate">Отчество:</label><br />
+                <label asp-for="BirthDate">Дата рождения:</label><br />
                 <input type="date" asp-for="BirthDate" />
                 <span asp-validation-for="BirthDate" />
             </div>
@@ -40,7 +40,7 @@
                 <label asp-for="PhoneNumber">Номер телефона:</label><br />
                 <input type="tel" asp-for="PhoneNumber" />
                 <span asp-validation-for="PhoneNumber" />
-            </div> 
+            </div>
             <div>
                 <label asp-for="Email">Email:</label><br />
                 <input type="email" asp-for="Email" />
@@ -61,6 +61,22 @@
                 <input type="number" asp-for="RoleId" />
                 <span asp-validation-for="RoleId" />
             </div>
+
+            <!-- Добавляем div-классы для динамического отображения полей -->
+            <div class="position-div" style="display:none;">
+                <!-- Скрываем изначально -->
+                <label asp-for="Position">Должность:</label><br />
+                <input type="text" asp-for="Position" />
+                <span asp-validation-for="Position" />
+            </div>
+
+            <div class="department-div" style="display:none;">
+                <!-- Скрываем изначально -->
+                <label asp-for="DepartmentId">Отдел:</label><br />
+                <input type="number" asp-for="DepartmentId" />
+                <span asp-validation-for="DepartmentId" />
+            </div>
+
             <div class="form-group">
                 <input type="submit" value="Зарегистрироваться" class="btn btn-danger" />
             </div>
@@ -71,3 +87,34 @@
     <br /><br />
     <a href="@Url.Action("Login", "User")" class="btn btn-link">Уже есть аккаунт? Войдите!</a>
 </div>
+
+<!-- Добавляем скрипт после body, чтобы элементы были загружены перед выполнением -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Получаем ссылку на поле RoleId
+        const roleInput = document.querySelector('input[name="RoleId"]');
+
+        // Элементы поля должности и отдела теперь имеют соответствующие классы
+        const positionDiv = document.querySelector('.position-div');
+        const departmentDiv = document.querySelector('.department-div');
+
+        // Функция изменения видимости блоков
+        function toggleFields() {
+            let isManager = parseInt(roleInput.value) === 2;
+
+            if (isManager) {
+                positionDiv.style.display = 'block';   // Показываем должность
+                departmentDiv.style.display = 'block'; // Показываем отдел
+            } else {
+                positionDiv.style.display = 'none';    // Скрываем должность
+                departmentDiv.style.display = 'none';  // Скрываем отдел
+            }
+        }
+
+        // Инициализация видимых полей при загрузке страницы
+        toggleFields();
+
+        // Обработчик события смены значения роли
+        roleInput.addEventListener('change', toggleFields);
+    });
+</script>
