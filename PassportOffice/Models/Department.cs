@@ -19,6 +19,6 @@ namespace PassportOffice.Models
         public TimeOnly WorkingHours { get; set; }
 
         // Навигационные свойства сотрудников и услуг
-        public virtual ICollection<Employee> Employees { get; set; } = new List<Employee>();
+        public virtual ICollection<User> Users { get; set; } = new List<User>();
     }
 }

@@ -9,11 +9,6 @@ namespace PassportOffice.Models
         [Key]
         public int Id { get; set; }
 
-        // Внешний ключ на заявителя
-        [ForeignKey(nameof(Applicant))]
-        public Guid ApplicantId { get; set; }
-        public virtual Applicant Applicant { get; set; }
-
         // Внешний ключ на вид обращения
         [ForeignKey(nameof(TypeOfApplication))]
         public int TypeOfApplicationId { get; set; }
@@ -32,10 +27,9 @@ namespace PassportOffice.Models
         // Коллекция документов
         public virtual ICollection<Document> AttachedDocuments { get; set; } = new List<Document>();
 
-        // Внешний ключ на сотрудника
-        [ForeignKey(nameof(Employee))]
-        public Guid EmployeeId { get; set; }
-        public virtual Employee Employee { get; set; }
+        [ForeignKey(nameof(User))]
+        public Guid UserId { get; set; }
+        public virtual User User { get; set; }
 
         public string ApplicationReview { get; set; }
     }

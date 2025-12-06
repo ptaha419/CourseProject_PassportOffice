@@ -10,8 +10,8 @@ namespace PassportOffice.Models
         } 
 
         public DbSet<User> Users { get; set; } 
-        public DbSet<Applicant> Applicants { get; set; } 
-        public DbSet<Employee> Employees { get; set; }
+        //public DbSet<Applicant> Applicants { get; set; } 
+        //public DbSet<Employee> Employees { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<Application> Applications { get; set; }
         public DbSet<Document> Documents { get; set; }

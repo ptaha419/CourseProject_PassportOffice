@@ -20,14 +20,8 @@ namespace PassportOffice.Models
         public int ApplicationId { get; set; }
         public virtual Application Application { get; set; }
 
-        // Внешний ключ на сотрудника
-        [ForeignKey(nameof(Employee))]
-        public Guid EmployeeId { get; set; }
-        public virtual Employee Employee { get; set; }
-
-        // Внешний ключ на заявителя
-        [ForeignKey(nameof(Applicant))]
-        public Guid ApplicantId { get; set; }
-        public virtual Applicant Applicant { get; set; }
+        [ForeignKey(nameof(User))]
+        public Guid UserId { get; set; }
+        public virtual User User { get; set; }
     }
 }

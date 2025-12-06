@@ -35,14 +35,5 @@ namespace PassportOffice.ViewModels
 
         [Required(ErrorMessage = "Не выбрана роль пользователя")]
         public int RoleId { get; set; }
-
-        // Новые поля для Applicant
-        public string BirthPlace { get; set; }
-
-        public string TaxPayerNumber { get; set; }
-
-        public string RegistrationAddress { get; set; }
-
-        public string Photo { get; set; }
     }
 }

@@ -1,7 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Xml.Linq;
-using static PassportOffice.Models.Document;
 
 namespace PassportOffice.Models
 {
@@ -22,10 +20,9 @@ namespace PassportOffice.Models
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
 
-        // Внешний ключ на заявителя
-        [ForeignKey(nameof(Applicant))]
-        public Guid ApplicantId { get; set; }
-        public virtual Applicant Applicant { get; set; }
+        [ForeignKey(nameof(User))]
+        public Guid UserId { get; set; }
+        public virtual User User { get; set; }
     }
 }
 

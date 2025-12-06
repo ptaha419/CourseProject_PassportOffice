@@ -8,92 +8,66 @@
 <div class="container text-center mt-5">
     <h2>Регистрация нового пользователя</h2>
 
-    <form asp-action="Register" asp-controller="User" method="post" enctype="multipart/form-data">
-        <div class="row justify-content-md-center">
-            <div class="col-md-8 col-lg-6">
-                <div class="form-group mb-3">
-                    <label for="Surname" class="form-label fw-bold">Фамилия</label>
-                    <input type="text" id="Surname" name="Surname" class="form-control"/>
-                    <span asp-validation-for="Surname" class="text-danger small"></span>
-                </div>
-
-                <div class="form-group mb-3">
-                    <label for="MiddleName" class="form-label fw-bold">Отчество</label>
-                    <input type="text" id="MiddleName" name="MiddleName" class="form-control"/>
-                    <span asp-validation-for="MiddleName" class="text-danger small"></span>
-                </div>
-
-                <div class="form-group mb-3">
-                    <label for="Name" class="form-label fw-bold">Имя</label>
-                    <input type="text" id="Name" name="Name" class="form-control"/>
-                    <span asp-validation-for="Name" class="text-danger small"></span>
-                </div>
-
-                <div class="form-group mb-3">
-                    <label for="BirthDate" class="form-label fw-bold">Дата рождения</label>
-                    <input type="date" id="BirthDate" name="BirthDate" class="form-control"/>
-                    <span asp-validation-for="BirthDate" class="text-danger small"></span>
-                </div>
-
-                <div class="form-group mb-3">
-                    <label for="Gender" class="form-label fw-bold">Пол</label>
-                    <select id="Gender" name="Gender" class="form-select form-control">
-                        <option value="">Выберите пол...</option>
-                        <option value="Мужской">Мужской</option>
-                        <option value="Женский">Женский</option>
-                    </select>
-                    <span asp-validation-for="Gender" class="text-danger small"></span>
-                </div>
-
-                <div class="form-group mb-3">
-                    <label for="PhoneNumber" class="form-label fw-bold">Телефон</label>
-                    <input type="tel" id="PhoneNumber" name="PhoneNumber" class="form-control"/>
-                    <span asp-validation-for="PhoneNumber" class="text-danger small"></span>
-                </div>
-
-                <div class="form-group mb-3">
-                    <label for="Email" class="form-label fw-bold">Email</label>
-                    <input type="email" id="Email" name="Email" class="form-control"/>
-                    <span asp-validation-for="Email" class="text-danger small"></span>
-                </div>
-
-                <div class="form-group mb-3">
-                    <label for="Password" class="form-label fw-bold">Пароль</label>
-                    <input type="password" id="Password" name="Password" class="form-control"/>
-                    <span asp-validation-for="Password" class="text-danger small"></span>
-                </div>
-
-                <div class="form-group mb-3">
-                    <label for="ConfirmPassword" class="form-label fw-bold">Повторите пароль</label>
-                    <input type="password" id="ConfirmPassword" name="ConfirmPassword" class="form-control"/>
-                    <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
-                </div>
-
-                <div class="form-group mb-3">
-                    <label for="RoleId" class="form-label fw-bold">Роль пользователя</label>
-                    @if (ViewBag.Roles != null && ((IEnumerable<Role>)ViewBag.Roles).Any())
-                    {
-                        <select id="RoleId" name="RoleId" class="form-select form-control custom-select" required>
-                            <option value="" disabled selected>Выберите роль пользователя...</option>
-                            @foreach (var role in (IEnumerable<Role>)ViewBag.Roles)
-                            {
-                                <option value="@role.Id">@role.Name</option>
-                            }
-                        </select>
-                    }
-                    else
-                    {
-                        <select id="RoleId" disabled class="form-select form-control custom-select">
-                            <option>Нет доступных ролей</option>
-                        </select>
-                    }
-                    <span asp-validation-for="RoleId" class="text-danger small"></span>
-                </div>
-
-                <button type="submit" class="btn btn-success w-100">Зарегистрироваться</button>
+    <form asp-action="Register" asp-controller="User" asp-anti-forgery="true">
+        <div class="validation" asp-validation-summary="ModelOnly"></div>
+        <div>
+            <div>
+                <label asp-for="Surname">Фамилия:</label><br />
+                <input type="text" asp-for="Surname" />
+                <span asp-validation-for="Surname" />
+            </div>
+            <div>
+                <label asp-for="MiddleName">Отчество:</label><br />
+                <input type="text" asp-for="MiddleName" />
+                <span asp-validation-for="MiddleName" />
+            </div>
+            <div>
+                <label asp-for="Name">Имя:</label><br />
+                <input type="text" asp-for="Name" />
+                <span asp-validation-for="Name" />
+            </div>
+            <div>
+                <label asp-for="BirthDate">Отчество:</label><br />
+                <input type="date" asp-for="BirthDate" />
+                <span asp-validation-for="BirthDate" />
+            </div>
+            <div>
+                <label asp-for="Gender">Пол:</label><br />
+                <input type="text" asp-for="Gender" />
+                <span asp-validation-for="Gender" />
+            </div>
+            <div>
+                <label asp-for="PhoneNumber">Номер телефона:</label><br />
+                <input type="tel" asp-for="PhoneNumber" />
+                <span asp-validation-for="PhoneNumber" />
+            </div> 
+            <div>
+                <label asp-for="Email">Email:</label><br />
+                <input type="email" asp-for="Email" />
+                <span asp-validation-for="Email" />
+            </div>
+            <div>
+                <label asp-for="Password">Пароль:</label><br />
+                <input type="password" asp-for="Password" />
+                <span asp-validation-for="Password" />
+            </div>
+            <div>
+                <label asp-for="ConfirmPassword">Повторите пароль</label><br />
+                <input asp-for="ConfirmPassword" />
+                <span asp-validation-for="ConfirmPassword" />
+            </div>
+            <div>
+                <label asp-for="RoleId">Роль:</label><br />
+                <input type="number" asp-for="RoleId" />
+                <span asp-validation-for="RoleId" />
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Зарегистрироваться" class="btn btn-danger" />
             </div>
         </div>
     </form>
 
-    <p class="mt-3"><a href="@Url.Action("Login", "User")" class="btn btn-link">Уже есть аккаунт? Войдите!</a></p>
+    <!-- Кнопка на случай, если пользователь уже зарегистрирован -->
+    <br /><br />
+    <a href="@Url.Action("Login", "User")" class="btn btn-link">Уже есть аккаунт? Войдите!</a>
 </div>

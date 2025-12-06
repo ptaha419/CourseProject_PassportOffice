@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PassportOffice.Models;
 using PassportOffice.ViewModels;
+
 using System.Security.Claims;
 
 namespace PassportOffice.Controllers
@@ -11,12 +12,10 @@ namespace PassportOffice.Controllers
     public class UserController : Controller
     {
         private WebAppDbContext _context;
-        private readonly IEnumerable<Role> _roles;
 
         public UserController(WebAppDbContext context)
         {
             _context = context;
-            _roles = _context.Roles.ToList();
         }
 
         //GET: Login
@@ -48,9 +47,9 @@ namespace PassportOffice.Controllers
 
         //GET: Register
         [HttpGet]
-        public async Task<IActionResult> Register() 
+        public async Task<IActionResult> Register()
         {
-            await GetRoles();
+            //await GetRoles();
             return View();
         }
 
@@ -61,49 +60,35 @@ namespace PassportOffice.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Проверка, что пользователь с таким email еще не существует
-                var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == model.Email);
-                if (existingUser != null)
+                User user = await _context.Users.FirstOrDefaultAsync(u =>
+                u.Email == model.Email);
+                if (user == null)
                 {
-                    ModelState.AddModelError("", "Пользователь с таким Email уже зарегистрирован");
-                    return View(model);
+                    // добавляем пользователя в бд
+                    _context.Users.Add(new User
+                    {
+                        Surname = model.Surname,
+                        MiddleName = model.MiddleName,
+                        Name = model.Name,
+                        BirthDate = model.BirthDate,
+                        Gender = model.Gender,
+                        PhoneNumber = model.PhoneNumber,
+                        Email = model.Email,
+                        Password = model.Password,
+                        RoleId = model.RoleId
+                    });
+
+                    await _context.SaveChangesAsync();
+
+                    await Authenticate(model.Email);
+
+                    return RedirectToAction("Index", "Home");
                 }
-
-                // Создаём нового заявителя (Applicant)
-                var applicant = new Applicant
-                {
-                    Surname = model.Surname,
-                    MiddleName = model.MiddleName,
-                    Name = model.Name,
-                    BirthDate = model.BirthDate,
-                    Gender = model.Gender,
-                    PhoneNumber = model.PhoneNumber,
-                    Email = model.Email,
-                    Password = model.Password,  
-                    RoleId = model.RoleId,      
-
-                    // Поля Applicant
-                    BirthPlace = model.BirthPlace,
-                    TaxPayerNumber = model.TaxPayerNumber,
-                    RegistrationAddress = model.RegistrationAddress,
-                    Photo = model.Photo
-                };
-
-                _context.Applicants.Add(applicant);
-                await _context.SaveChangesAsync();
-
-                await Authenticate(applicant.Email); // аутентификация после регистрации
-
-                return RedirectToAction("Index", "Home");
+                else
+                    ModelState.AddModelError("", "Некорректные логин и/или пароль");
             }
-            await GetRoles();
+            //await GetRoles();
             return View(model);
-        }
-
-        private async Task GetRoles()
-        {
-            var roles = await _context.Roles.ToListAsync();
-            ViewBag.Roles = roles;
         }
 
         private async Task Authenticate(string userName)
@@ -117,6 +102,12 @@ namespace PassportOffice.Controllers
             ClaimsIdentity id = new ClaimsIdentity(claims, "ApplicationCookie", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
             // установка аутентификационных куки
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id));
+        }
+
+        private async Task GetRoles()
+        {
+            var roles = await _context.Roles.ToListAsync();
+            ViewBag.Roles = roles;
         }
 
         public async Task<IActionResult> Logout()
