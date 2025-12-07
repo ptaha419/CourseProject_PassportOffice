@@ -20,7 +20,7 @@ namespace PassportOffice.Models
 
         [Required]
         public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
+        public DateTime? EndDate { get; set; }
         [Required]
         public string Description { get; set; }
 
@@ -31,6 +31,6 @@ namespace PassportOffice.Models
         public Guid UserId { get; set; }
         public virtual User User { get; set; }
 
-        public string ApplicationReview { get; set; }
+        public string? ApplicationReview { get; set; }
     }
 }
