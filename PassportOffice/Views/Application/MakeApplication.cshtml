@@ -1,4 +1,4 @@
-﻿@model PassportOffice.Models.Application
+﻿@model PassportOffice.ViewModels.ApplicationModel
 
 @{
     Layout = "_Layout";
@@ -11,7 +11,7 @@
     <form asp-action="MakeApplication" asp-controller="Application" method="post" enctype="multipart/form-data">
         <div class="row justify-content-md-center">
             <div class="col-md-8 col-lg-6">
-                <div class="form-group mb-3">
+@*                 <div class="form-group mb-3">
                     <label for="TypeOfApplicationId" class="form-label fw-bold">Тип заявления</label>
                     @if (ViewBag.Types != null && ((IEnumerable<TypeOfApplication>)ViewBag.Types).Any())
                     {
@@ -29,6 +29,12 @@
                             <option>Нет доступных типов заявлений</option>
                         </select>
                     }
+                    <span asp-validation-for="TypeOfApplicationId" class="text-danger small"></span>
+                </div> *@
+
+                <div class="form-group mb-3">
+                    <label for="TypeOfApplicationId" class="form-label fw-bold">Тип заявления</label>
+                    <input type="number" id="TypeOfApplicationId" name="TypeOfApplicationId" class="form-control" />
                     <span asp-validation-for="TypeOfApplicationId" class="text-danger small"></span>
                 </div>
 

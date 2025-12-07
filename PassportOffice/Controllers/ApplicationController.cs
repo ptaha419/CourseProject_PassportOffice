@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PassportOffice.Models;
+using PassportOffice.ViewModels;
+using System.Security.Claims;
 
 namespace PassportOffice.Controllers
 {
@@ -10,8 +12,6 @@ namespace PassportOffice.Controllers
     {
         private WebAppDbContext _context;
         private readonly IEnumerable<Status> _statuses;
-        //private readonly UserManager<User> _userManager;
-        //private readonly RoleManager<IdentityRole<int>> _roleManager;
 
         public ApplicationController(WebAppDbContext context)
         {
@@ -20,40 +20,46 @@ namespace PassportOffice.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> MakeApplication()
+        public IActionResult MakeApplication(int id, int typeOfApplicationId, int statusId, DateTime startDate, string description)
         {
-            await GetTypesOfApplication();
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            ViewBag.Id = id;
+            ViewBag.TypeOfApplicationId = typeOfApplicationId;
+            ViewBag.StatusId = statusId;
+            ViewBag.StartDate = startDate;
+            ViewBag.Description = description;
+            ViewBag.UserId = userIdString;
+
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> MakeApplication(Application model)
+        public async Task<IActionResult> MakeApplication(int typeOfApplicationId, DateTime startDate, string description)
         {
-            if (ModelState.IsValid)
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userIdString))
             {
-                string currentUserEmail = User.Identity.Name; 
-
-                var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == currentUserEmail);
-
-                var application = new Application
-                {
-                    TypeOfApplicationId = model.TypeOfApplicationId,
-                    StatusId = GetDefaultStatusId(),
-                    UserId = user.Id, 
-                    StartDate = model.StartDate,
-                    Description = model.Description
-                };
-
-                application.UserId = user.Id; 
-                _context.Applications.Add(application);
-                await _context.SaveChangesAsync();
-
-                return RedirectToAction("AllApplications", "Application");
+                return Unauthorized(); // пользователь не аутентифицирован
             }
 
-            await GetTypesOfApplication();
-            return View(model);
+            Guid userId = Guid.Parse(userIdString);
+
+            // Создаём модель заявления
+            var application = new Application
+            {
+                TypeOfApplicationId = typeOfApplicationId,
+                StartDate = startDate,
+                Description = description,
+                UserId = userId,
+                StatusId = 1 // например, статус "новое"
+            };
+
+            _context.Applications.Add(application);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("AllApplications");
         }
 
         private async Task GetTypesOfApplication() 
@@ -63,7 +69,8 @@ namespace PassportOffice.Controllers
         }
 
         // Статус заявления по умолчанию "Новое"
-        private int GetDefaultStatusId() => _statuses.First().Id;
+        //private async Task<int> GetDefaultStatusId() =>
+        //    (await _context.Statuses.FirstOrDefaultAsync())?.Id ?? 0;
 
         [HttpGet]
         public IActionResult RedirectToMakeApplication()

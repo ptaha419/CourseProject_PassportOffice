@@ -1,1 +1,51 @@
-﻿
+﻿@model PassportOffice.ViewModels.ApplicationModel
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Редактировать заявление";
+}
+
+<div class="container text-center mt-5">
+    <h2>Редактировать заявление</h2>
+
+    <form asp-action="MakeApplication" asp-controller="Application" method="post" enctype="multipart/form-data">
+        <div class="row justify-content-md-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="form-group mb-3">
+                    <label for="TypeOfApplicationId" class="form-label fw-bold">Тип заявления</label>
+                    <input type="number" id="TypeOfApplicationId" name="TypeOfApplicationId" class="form-control" />
+                    <span asp-validation-for="TypeOfApplicationId" class="text-danger small"></span>
+                </div>
+                <div class="form-group mb-3">
+                    <label for="StatusId" class="form-label fw-bold">Статус заявления</label>
+                    <input type="date" id="StatusId" name="StatusId" class="form-control" readonly />
+                    <span asp-validation-for="StatusId" class="text-danger small"></span>
+                </div>
+                <div class="form-group mb-3">
+                    <label for="StartDate" class="form-label fw-bold">Дата подачи заявления</label>
+                    <input type="date" id="StartDate" name="StartDate" class="form-control" readonly />
+                    <span asp-validation-for="StartDate" class="text-danger small"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="EndDate" class="form-label fw-bold">Дата рассмотрения заявления</label>
+                    <input type="date" id="EndDate" name="EndDate" value="@DateTime.Now.ToString("yyyy-MM-dd")" class="form-control" readonly />
+                    <span asp-validation-for="EndDate" class="text-danger small"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="Description" class="form-label fw-bold">Текст заявления</label>
+                    <textarea rows="4" cols="50" id="Description" name="Description" class="form-control"></textarea>
+                    <span asp-validation-for="Description" class="text-danger small"></span>
+                </div>
+                <div class="form-group mb-3">
+                    <label for="ApplicationReview" class="form-label fw-bold">Решение по заявлению</label>
+                    <textarea rows="4" cols="50" id="ApplicationReview" name="ApplicationReview" class="form-control"></textarea>
+                    <span asp-validation-for="ApplicationReview" class="text-danger small"></span>
+                </div>
+
+                <button type="submit" class="btn btn-success w-100">Сохранить</button>
+            </div>
+        </div>
+    </form>
+</div>

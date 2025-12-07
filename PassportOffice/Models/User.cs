@@ -35,7 +35,7 @@ namespace PassportOffice.Models
 
         [Required]
         [ForeignKey(nameof(Role))]
-        public int RoleId { get; set; }
+        public int? RoleId { get; set; }
         public virtual Role Role { get; set; }
 
         [Required]
@@ -49,7 +49,7 @@ namespace PassportOffice.Models
 
         // Внешний ключ на отдел
         [ForeignKey(nameof(Department))]
-        public int DepartmentId { get; set; }
+        public int? DepartmentId { get; set; }
         public virtual Department Department { get; set; }
 
         public virtual ICollection<Document> Documents { get; set; } = new List<Document>();

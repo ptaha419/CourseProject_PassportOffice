@@ -34,10 +34,11 @@ namespace PassportOffice.Controllers
             if (ModelState.IsValid)
             {
                 User user = await _context.Users.FirstOrDefaultAsync(u =>
-                u.Email == model.Email && u.Password == model.Password);
+                    u.Email == model.Email && u.Password == model.Password);
                 if (user != null)
                 {
-                    await Authenticate(model.Email); // аутентификация
+                    // Передаем в Authenticate email и user.Id для добавления в claims
+                    await Authenticate(user.Email, user.Id);
 
                     return RedirectToAction("Index", "Home");
                 }
@@ -83,9 +84,10 @@ namespace PassportOffice.Controllers
                         DepartmentId = model.RoleId == 2 ? model.DepartmentId : default(int),
                     });
 
+
                     await _context.SaveChangesAsync();
 
-                    await Authenticate(model.Email);
+                    await Authenticate(model.Email, user.Id);
 
                     return RedirectToAction("Index", "Home");
                 }
@@ -96,18 +98,31 @@ namespace PassportOffice.Controllers
             return View(model);
         }
 
-        private async Task Authenticate(string userName)
+        private async Task Authenticate(string userName, Guid userId)
         {
-            // создаем один claim
             var claims = new List<Claim>
             {
-                new Claim(ClaimsIdentity.DefaultNameClaimType, userName)
+                new Claim(ClaimsIdentity.DefaultNameClaimType, userName),
+                new Claim(ClaimTypes.NameIdentifier, userId.ToString())  // добавляем UserId
             };
-            // создаем объект ClaimsIdentity
+
             ClaimsIdentity id = new ClaimsIdentity(claims, "ApplicationCookie", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
-            // установка аутентификационных куки
+
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id));
         }
+
+        //private async Task Authenticate(string userName)
+        //{
+        //    // создаем один claim
+        //    var claims = new List<Claim>
+        //    {
+        //        new Claim(ClaimsIdentity.DefaultNameClaimType, userName)
+        //    };
+        //    // создаем объект ClaimsIdentity
+        //    ClaimsIdentity id = new ClaimsIdentity(claims, "ApplicationCookie", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
+        //    // установка аутентификационных куки
+        //    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id));
+        //}
 
         private async Task GetRoles()
         {

@@ -14,8 +14,8 @@ namespace PassportOffice.ViewModels
         public DateTime EndDate { get; set; }
         [Required(ErrorMessage = "Текст заявления отсутствует")]
         public string Description { get; set; }
-        public virtual ICollection<Document> AttachedDocuments { get; set; } = new List<Document>();
-        public Guid EmployeeId { get; set; }
+        public Guid UserId { get; set; }
+
         public string ApplicationReview { get; set; }
     }
 }
