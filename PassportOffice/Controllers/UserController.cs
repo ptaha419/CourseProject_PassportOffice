@@ -51,7 +51,7 @@ namespace PassportOffice.Controllers
         [HttpGet]
         public async Task<IActionResult> Register()
         {
-            await GetRoles();
+            //await GetRoles();
             return View();
         }
 
@@ -78,10 +78,9 @@ namespace PassportOffice.Controllers
                         Email = model.Email,
                         Password = model.Password,
                         RoleId = model.RoleId,
-
-                        // Если RoleId = 2, то заполняются доп. поля для сотрудника 
-                        Position = model.RoleId == 2 ? model.Position : "",
-                        DepartmentId = model.RoleId == 2 ? model.DepartmentId : default(int),
+                        BirthPlace = model.BirthPlace, 
+                        TaxPayerNumber = model.TaxPayerNumber,
+                        RegistrationAddress = model.RegistrationAddress
                     });
 
 
@@ -94,7 +93,7 @@ namespace PassportOffice.Controllers
                 else
                     ModelState.AddModelError("", "Некорректные логин и/или пароль");
             }
-            await GetRoles();
+            //await GetRoles();
             return View(model);
         }
 
@@ -111,29 +110,16 @@ namespace PassportOffice.Controllers
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id));
         }
 
-        //private async Task Authenticate(string userName)
+        //private async Task GetRoles()
         //{
-        //    // создаем один claim
-        //    var claims = new List<Claim>
+        //    var roles = await _context.Roles.Select(r => new SelectListItem
         //    {
-        //        new Claim(ClaimsIdentity.DefaultNameClaimType, userName)
-        //    };
-        //    // создаем объект ClaimsIdentity
-        //    ClaimsIdentity id = new ClaimsIdentity(claims, "ApplicationCookie", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
-        //    // установка аутентификационных куки
-        //    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id));
+        //        Value = r.Id.ToString(),      // Значение (id роли)
+        //        Text = r.Name                 // Название роли
+        //    }).ToListAsync();
+
+        //    ViewBag.Roles = roles;
         //}
-
-        private async Task GetRoles()
-        {
-            var roles = await _context.Roles.Select(r => new SelectListItem
-            {
-                Value = r.Id.ToString(),      // Значение (id роли)
-                Text = r.Name                 // Название роли
-            }).ToListAsync();
-
-            ViewBag.Roles = roles;
-        }
 
         public async Task<IActionResult> Logout()
         {

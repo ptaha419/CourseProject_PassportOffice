@@ -27,7 +27,7 @@
                 <span asp-validation-for="Name" />
             </div>
             <div>
-                <label asp-for="BirthDate">Дата рождения:</label><br />
+                <label asp-for="BirthDate">Отчество:</label><br />
                 <input type="date" asp-for="BirthDate" />
                 <span asp-validation-for="BirthDate" />
             </div>
@@ -37,10 +37,26 @@
                 <span asp-validation-for="Gender" />
             </div>
             <div>
+                <label asp-for="BirthPlace">Место рождения:</label><br />
+                <input type="text" asp-for="BirthPlace" />
+                <span asp-validation-for="BirthPlace" />
+            </div>
+            <div>
+                <label asp-for="TaxPayerNumber">ИНН:</label><br />
+                <input type="text" asp-for="TaxPayerNumber" />
+                <span asp-validation-for="TaxPayerNumber" />
+            </div>
+            <div>
+                <label asp-for="RegistrationAddress">Адрес регистрации:</label><br />
+                <input type="text" asp-for="RegistrationAddress" />
+                <span asp-validation-for="RegistrationAddress" />
+            </div>
+
+            <div>
                 <label asp-for="PhoneNumber">Номер телефона:</label><br />
                 <input type="tel" asp-for="PhoneNumber" />
                 <span asp-validation-for="PhoneNumber" />
-            </div>
+            </div> 
             <div>
                 <label asp-for="Email">Email:</label><br />
                 <input type="email" asp-for="Email" />
@@ -57,29 +73,10 @@
                 <span asp-validation-for="ConfirmPassword" />
             </div>
             <div>
-                <label asp-for="RoleId">Роль:</label><br /> 
-                <select asp-for="RoleId" asp-items="ViewBag.Roles" class="form-control select-width"
-                        style="margin-left: auto; margin-right: auto; display: block; width: fit-content;">
-                    <option value="" disabled selected>Выберите роль...</option>
-                </select>
+                <label asp-for="RoleId">Роль:</label><br />
+                <input type="number" asp-for="RoleId" />
                 <span asp-validation-for="RoleId" />
             </div>
-
-            <!-- Добавляем div-классы для динамического отображения полей -->
-            <div class="position-div" style="display:none;">
-                <!-- Скрываем изначально -->
-                <label asp-for="Position">Должность:</label><br />
-                <input type="text" asp-for="Position" />
-                <span asp-validation-for="Position" />
-            </div>
-
-            <div class="department-div" style="display:none;">
-                <!-- Скрываем изначально -->
-                <label asp-for="DepartmentId">Отдел:</label><br />
-                <input type="number" asp-for="DepartmentId" />
-                <span asp-validation-for="DepartmentId" />
-            </div>
-
             <div class="form-group">
                 <input type="submit" value="Зарегистрироваться" class="btn btn-danger" />
             </div>
@@ -90,33 +87,3 @@
     <br /><br />
     <a href="@Url.Action("Login", "User")" class="btn btn-link">Уже есть аккаунт? Войдите!</a>
 </div>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Получаем ссылку на элемент select (roleId)
-        const roleSelect = document.querySelector('select[name="RoleId"]'); 
-
-        // Элементы блока для должности и отдела
-        const positionDiv = document.querySelector('.position-div');
-        const departmentDiv = document.querySelector('.department-div');
-
-        // Функция изменения видимости блоков
-        function toggleFields() {
-            let selectedValue = parseInt(roleSelect.value); 
-            let isManager = selectedValue === 2;           // Проверяем, равна ли роль значению 2
-
-            if (isManager) {                               
-                positionDiv.style.display = 'block';       
-                departmentDiv.style.display = 'block';     
-            } else {
-                positionDiv.style.display = 'none';        
-                departmentDiv.style.display = 'none';
-            }
-        }
-
-        // Инициализация видимости при первой загрузке страницы
-        toggleFields();                                    
-
-        roleSelect.addEventListener('change', toggleFields); // Отслеживаем смену выбранного пункта
-    });
-</script>

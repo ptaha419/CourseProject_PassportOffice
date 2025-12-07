@@ -78,29 +78,55 @@ namespace PassportOffice.Controllers
             return RedirectToAction("MakeApplication", "Application");
         }
 
+        private bool IsEmployee(User currentUser)
+        {
+            return currentUser.RoleId == 2;
+        }
+
+        // Метод получения всех заявок с учётом ограничений прав доступа
         [HttpGet]
         public async Task<IActionResult> AllApplications(int? statusId, int? typeOfApplicationId)
         {
+            // Получаем текущего пользователя
+            var currentUser = await GetCurrentUserAsync(HttpContext.User.Identity.Name);
+
+            // Запрашиваем доступные заявки
             IQueryable<Application> applicationsQuery = _context.Applications.AsQueryable();
 
-            // Фильтрация по статусу, если выбран статус
+            // Если пользователь НЕ администратор, фильтруем заявки по его UserId
+            if (!IsEmployee(currentUser))
+            {
+                applicationsQuery = applicationsQuery.Where(app => app.UserId == currentUser.Id);
+            }
+
+            // Дополнительные фильтры (статус и тип заявки)
             if (statusId.HasValue && statusId.Value > 0)
             {
                 applicationsQuery = applicationsQuery.Where(app => app.StatusId == statusId.Value);
             }
 
-            // Фильтрация по типу заявки, если выбран тип
             if (typeOfApplicationId.HasValue && typeOfApplicationId.Value > 0)
             {
                 applicationsQuery = applicationsQuery.Where(app => app.TypeOfApplicationId == typeOfApplicationId.Value);
             }
 
-            var applications = await applicationsQuery.Include(app => app.Status).Include(app => app.TypeOfApplication).ToListAsync();
+            // Выполняем запрос с включёнными зависимостями
+            var applications = await applicationsQuery
+                .Include(app => app.Status)
+                .Include(app => app.TypeOfApplication)
+                .ToListAsync();
 
-            ViewData["Statuses"] = await _context.Statuses.OrderBy(s => s.Name).ToListAsync(); 
-            ViewData["TypesOfApplication"] = await _context.TypesOfApplication.OrderBy(t => t.Name).ToListAsync(); 
+            // Передача данных в представление
+            ViewData["Statuses"] = await _context.Statuses.OrderBy(s => s.Name).ToListAsync();
+            ViewData["TypesOfApplication"] = await _context.TypesOfApplication.OrderBy(t => t.Name).ToListAsync();
 
-            return View(applications); 
+            return View(applications);
+        }
+
+        // Вспомогательный метод для получения текущего пользователя
+        private async Task<User> GetCurrentUserAsync(string username)
+        {
+            return await _context.Users.FirstOrDefaultAsync(u => u.Email == username);
         }
 
         //[HttpGet]

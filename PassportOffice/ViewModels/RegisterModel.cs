@@ -36,10 +36,13 @@ namespace PassportOffice.ViewModels
         [Required(ErrorMessage = "Не выбрана роль пользователя")]
         public int RoleId { get; set; }
 
-        [Display(Name = "Должность")]
-        public string Position { get; set; }
+        [Required(ErrorMessage = "Не указано место рождения")]
+        public string BirthPlace { get; set; }
 
-        [Display(Name = "Отдел")]
-        public int DepartmentId { get; set; }
+        [Required(ErrorMessage = "Не указан ИНН")]
+        public string TaxPayerNumber { get; set; }  // ИНН 
+
+        [Required(ErrorMessage = "Не указан адрес регистрации")]
+        public string RegistrationAddress { get; set; }
     }
 }

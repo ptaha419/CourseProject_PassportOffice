@@ -35,7 +35,7 @@ namespace PassportOffice.Models
 
         [Required]
         [ForeignKey(nameof(Role))]
-        public int? RoleId { get; set; }
+        public int RoleId { get; set; }
         public virtual Role Role { get; set; }
 
         [Required]
@@ -44,8 +44,8 @@ namespace PassportOffice.Models
         public string TaxPayerNumber { get; set; }  // ИНН 
         [Required]
         public string RegistrationAddress { get; set; }
-        public string Photo { get; set; }
-        public string Position { get; set; }
+        public string? Photo { get; set; }
+        public string? Position { get; set; }
 
         // Внешний ключ на отдел
         [ForeignKey(nameof(Department))]
