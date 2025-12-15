@@ -89,6 +89,7 @@ namespace PassportOffice.Controllers
         {
             // Получаем текущего пользователя
             var currentUser = await GetCurrentUserAsync(HttpContext.User.Identity.Name);
+            ViewBag.CurrentUserRoleId = currentUser.RoleId;
 
             // Запрашиваем доступные заявки
             IQueryable<Application> applicationsQuery = _context.Applications.AsQueryable();
@@ -211,6 +212,49 @@ namespace PassportOffice.Controllers
             }
 
             _context.Applications.Update(existingApplication);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("AllApplications");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int id)
+        {
+            // Получаем текущего пользователя
+            var currentUser = await GetCurrentUserAsync(User.Identity.Name);
+
+            if (currentUser == null)
+            {
+                return Unauthorized();
+            }
+
+            // Проверяем, что у пользователя RoleId == 1
+            if (currentUser.RoleId != 1)
+            {
+                return Forbid(); // Доступ запрещён
+            }
+
+            // Получаем заявление по id
+            var application = await _context.Applications.FindAsync(id);
+            if (application == null)
+            {
+                return NotFound();
+            }
+
+            // Проверяем статус заявления
+            if (application.StatusId != 1)
+            {
+                return Forbid(); // Доступ запрещён, если статус не "Новое"
+            }
+
+            // Проверяем, что заявление принадлежит текущему пользователю
+            if (application.UserId != currentUser.Id)
+            {
+                return Forbid(); // Доступ запрещён, если не владелец
+            }
+
+            _context.Applications.Remove(application);
             await _context.SaveChangesAsync();
 
             return RedirectToAction("AllApplications");
