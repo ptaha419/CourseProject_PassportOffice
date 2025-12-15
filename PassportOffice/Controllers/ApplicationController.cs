@@ -129,97 +129,91 @@ namespace PassportOffice.Controllers
             return await _context.Users.FirstOrDefaultAsync(u => u.Email == username);
         }
 
-        //[HttpGet]
-        //public async Task<IActionResult> Edit(int id)
-        //{
-        //    var application = await _context.Applications.FindAsync(id);
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userIdString))
+                return Unauthorized();
 
-        //    if (application == null)
-        //    {
-        //        return NotFound();
-        //    }
+            Guid userId = Guid.Parse(userIdString);
+            var currentUser = await _context.Users.FindAsync(userId);
 
-        //    var currentUser = await _userManager.GetUserAsync(User);
-        //    if (currentUser == null || !_roleManager.RoleExistsAsync("Сотрудник").Result)
-        //    {
-        //        return Forbid();
-        //    }
+            if (currentUser == null)
+                return Unauthorized();
 
-        //    var employeeRole = await _roleManager.FindByNameAsync("Сотрудник");
-        //    if (employeeRole == null)
-        //    {
-        //        return Forbid();
-        //    }
+            var application = await _context.Applications
+                .Include(a => a.TypeOfApplication)
+                .Include(a => a.Status)
+                .FirstOrDefaultAsync(a => a.Id == id);
 
-        //    bool isEmployee = currentUser.RoleId == employeeRole.Id;
+            if (application == null)
+                return NotFound();
 
-        //    if (!isEmployee && application.StatusId != 1)
-        //    {
-        //        return View("Details", application);
-        //    }
+            if (!IsEmployee(currentUser))
+            {
+                if (application.UserId != userId || application.StatusId != 1)
+                    return Forbid();
+            }
 
-        //    return View(application);
-        //}
+            ViewBag.IsEmployee = currentUser.RoleId == 2;
 
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Edit(int id, Application application)
-        //{
-        //    if (id != application.Id)
-        //    {
-        //        return BadRequest();
-        //    }
+            // Получаем все статусы для выпадающего списка
+            ViewBag.StatusList = await _context.Statuses.ToListAsync();
 
-        //    var existingApplication = await _context.Applications.FindAsync(id);
+            return View(application);
+        }
 
-        //    if (existingApplication == null)
-        //    {
-        //        return NotFound();
-        //    }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(Application model)
+        {
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userIdString))
+            {
+                return Unauthorized();
+            }
+            Guid userId = Guid.Parse(userIdString);
 
-        //    var currentUser = await _userManager.GetUserAsync(User);
-        //    if (currentUser == null || !_roleManager.RoleExistsAsync("Сотрудник").Result)
-        //    {
-        //        return Forbid();
-        //    }
+            var currentUser = await _context.Users.FindAsync(userId);
+            if (currentUser == null)
+            {
+                return Unauthorized();
+            }
 
-        //    var employeeRole = await _roleManager.FindByNameAsync("Сотрудник");
-        //    if (employeeRole == null)
-        //    {
-        //        return Forbid();
-        //    }
+            var existingApplication = await _context.Applications.FindAsync(model.Id);
+            if (existingApplication == null)
+            {
+                return NotFound();
+            }
 
-        //    bool isEmployee = currentUser.RoleId == employeeRole.Id;
+            if (!IsEmployee(currentUser))
+            {
+                // Обычный пользователь может редактировать только свои заявки со статусом 1
+                if (existingApplication.UserId != userId || existingApplication.StatusId != 1)
+                {
+                    return Forbid();
+                }
 
-        //    if (!isEmployee && existingApplication.StatusId != 1)
-        //    {
-        //        ModelState.AddModelError("", "Вы можете редактировать только те заявления, у которых статус 'Новое'.");
-        //        return View(existingApplication);
-        //    }
+                // Редактируем только Description и StartDate
+                existingApplication.Description = model.Description;
+                existingApplication.StartDate = model.StartDate;
+                // Не меняем StatusId, EndDate, ApplicationReview
+            }
+            else
+            {
+                // Сотрудник может менять StatusId, EndDate, ApplicationReview, а также описание и дату
+                existingApplication.StatusId = model.StatusId;
+                existingApplication.EndDate = model.EndDate;
+                existingApplication.ApplicationReview = model.ApplicationReview;
+                //existingApplication.Description = model.Description;
+                //existingApplication.StartDate = model.StartDate;
+            }
 
-        //    if (isEmployee)
-        //    {
-        //        existingApplication.EndDate = application.EndDate;
-        //        existingApplication.ApplicationReview = application.ApplicationReview;
-        //        existingApplication.StatusId = application.StatusId;
-        //    }
-        //    else
-        //    {
-        //        existingApplication.Description = application.Description;
-        //        existingApplication.StartDate = application.StartDate;
-        //    }
+            _context.Applications.Update(existingApplication);
+            await _context.SaveChangesAsync();
 
-        //    try
-        //    {
-        //        await _context.SaveChangesAsync();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        ModelState.AddModelError("", $"Ошибка сохранения: {ex.Message}");
-        //        return View(application);
-        //    }
-
-        //    return RedirectToAction(nameof(Index));
-        //}
+            return RedirectToAction("AllApplications");
+        }
     }
 }

@@ -1,4 +1,4 @@
-﻿@model PassportOffice.ViewModels.ApplicationModel
+﻿@model PassportOffice.Models.Application
 
 @{
     Layout = "_Layout";
@@ -8,23 +8,39 @@
 <div class="container text-center mt-5">
     <h2>Редактировать заявление</h2>
 
-    <form asp-action="MakeApplication" asp-controller="Application" method="post" enctype="multipart/form-data">
+    <form asp-action="Edit" asp-controller="Application" method="post" enctype="multipart/form-data">
+        @Html.AntiForgeryToken()
         <div class="row justify-content-md-center">
             <div class="col-md-8 col-lg-6">
-                <div class="form-group mb-3">
-                    <label for="TypeOfApplicationId" class="form-label fw-bold">Тип заявления</label>
-                    <input type="number" id="TypeOfApplicationId" name="TypeOfApplicationId" class="form-control" />
-                    <span asp-validation-for="TypeOfApplicationId" class="text-danger small"></span>
+                <div class="form-group mb-3"> 
+                    <input type="hidden" id="Id" name="Id" value="@Model.Id" class="form-control" />
+                    <label for="TypeOfApplicationId" class="form-label fw-bold">Тип заявления:</label>
+                    <input type="hidden" id="TypeOfApplicationId" name="TypeOfApplicationId" value="@Model.TypeOfApplicationId" class="form-control" />
+                    <p class="form-text text-muted">@Model.TypeOfApplication.Name</p>
                 </div>
+                @if (ViewBag.IsEmployee == true)
+                {
+                    <div class="form-group mb-3">
+                        <label for="StatusId" class="form-label fw-bold">Статус заявления:</label>
+                        <select id="StatusId" name="StatusId" class="form-control">
+                            @foreach (var status in ViewBag.StatusList as List<PassportOffice.Models.Status>)
+                            {
+                                <option value="@status.Id" selected="@(status.Id == Model.StatusId ? "selected" : null)">@status.Name</option>
+                            }
+                        </select>
+                    </div>
+                }
+                else
+                {
+                    <div class="form-group mb-3">
+                        <label class="form-label fw-bold">Статус заявления:</label>
+                        <p class="form-text text-muted">@Model.Status.Name</p>
+                    </div>
+                }
                 <div class="form-group mb-3">
-                    <label for="StatusId" class="form-label fw-bold">Статус заявления</label>
-                    <input type="date" id="StatusId" name="StatusId" class="form-control" readonly />
-                    <span asp-validation-for="StatusId" class="text-danger small"></span>
-                </div>
-                <div class="form-group mb-3">
-                    <label for="StartDate" class="form-label fw-bold">Дата подачи заявления</label>
-                    <input type="date" id="StartDate" name="StartDate" class="form-control" readonly />
-                    <span asp-validation-for="StartDate" class="text-danger small"></span>
+                    <label for="StartDate" class="form-label fw-bold">Дата подачи заявления:</label>
+                    <input type="hidden" id="StartDate" name="StartDate" value="@Model.StartDate.ToString("yyyy-MM-dd")" class="form-control" />
+                    <p class="form-text text-muted">@Model.StartDate.ToShortDateString()</p>
                 </div>
 
                 <div class="form-group mb-3">
@@ -32,18 +48,22 @@
                     <input type="date" id="EndDate" name="EndDate" value="@DateTime.Now.ToString("yyyy-MM-dd")" class="form-control" readonly />
                     <span asp-validation-for="EndDate" class="text-danger small"></span>
                 </div>
-
-                <div class="form-group mb-3">
-                    <label for="Description" class="form-label fw-bold">Текст заявления</label>
-                    <textarea rows="4" cols="50" id="Description" name="Description" class="form-control"></textarea>
-                    <span asp-validation-for="Description" class="text-danger small"></span>
-                </div>
-                <div class="form-group mb-3">
-                    <label for="ApplicationReview" class="form-label fw-bold">Решение по заявлению</label>
-                    <textarea rows="4" cols="50" id="ApplicationReview" name="ApplicationReview" class="form-control"></textarea>
-                    <span asp-validation-for="ApplicationReview" class="text-danger small"></span>
-                </div>
-
+                @if (ViewBag.IsEmployee == false)
+                {
+                    <div class="form-group mb-3">
+                        <label for="Description" class="form-label fw-bold">Текст заявления</label>
+                        <textarea rows="4" cols="50" id="Description" name="Description" class="form-control"></textarea>
+                        <span asp-validation-for="Description" class="text-danger small"></span>
+                    </div>
+                }
+                @if (ViewBag.IsEmployee == true)
+                {
+                    <div class="form-group mb-3">
+                        <label for="ApplicationReview" class="form-label fw-bold">Решение по заявлению</label>
+                        <textarea rows="4" cols="50" id="ApplicationReview" name="ApplicationReview" class="form-control">@Model.ApplicationReview</textarea>
+                        <span asp-validation-for="ApplicationReview" class="text-danger small"></span>
+                    </div>
+                }
                 <button type="submit" class="btn btn-success w-100">Сохранить</button>
             </div>
         </div>

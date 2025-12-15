@@ -22,7 +22,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     .AddCookie(options => // CookieAuthenticationOptions
     {
         options.LoginPath = "/User/Login";
-        options.LogoutPath = "/User/Logout";
+        options.LogoutPath = "/User/Logout"; 
     });
 
 // Добавляем поддержку сеансов
