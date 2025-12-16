@@ -50,6 +50,14 @@
                     <span asp-validation-for="Description" class="text-danger small"></span>
                 </div>
 
+                <label for="attachedDocuments">Прикрепить документы</label>
+                <select id="attachedDocuments" name="attachedDocumentsIds" multiple>
+                    @foreach (var doc in ViewBag.UserDocuments as List<Document>)
+                    {
+                        <option value="@doc.Id">@doc.TypeOfDocument.Name</option>
+                    }
+                </select>
+
                 <button type="submit" class="btn btn-success w-100">Подать заявление</button>
             </div>
         </div>

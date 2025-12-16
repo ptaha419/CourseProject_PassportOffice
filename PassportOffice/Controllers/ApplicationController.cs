@@ -20,15 +20,24 @@ namespace PassportOffice.Controllers
         }
 
         [HttpGet]
-        public IActionResult MakeApplication(int id, int typeOfApplicationId, int statusId, DateTime startDate, string description)
+        public async Task<IActionResult> MakeApplication(int id, int typeOfApplicationId, int statusId, DateTime startDate, string description)
         {
             var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            Guid userId = Guid.Parse(userIdString);
+
+            // Получаем документы пользователя
+            var userDocuments = await _context.Documents
+                .Where(d => d.UserId == userId)
+                .Include(d => d.TypeOfDocument)
+                .ToListAsync();
 
             ViewBag.Id = id;
             ViewBag.TypeOfApplicationId = typeOfApplicationId;
             ViewBag.StatusId = statusId;
             ViewBag.StartDate = startDate;
             ViewBag.Description = description;
+            ViewBag.UserDocuments = userDocuments;
             ViewBag.UserId = userIdString;
 
             return View();
@@ -36,25 +45,38 @@ namespace PassportOffice.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> MakeApplication(int typeOfApplicationId, DateTime startDate, string description)
+        public async Task<IActionResult> MakeApplication(int typeOfApplicationId, DateTime startDate, string description, List<int> attachedDocumentsIds)
         {
             var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(userIdString))
             {
-                return Unauthorized(); // пользователь не аутентифицирован
+                return Unauthorized();
             }
 
             Guid userId = Guid.Parse(userIdString);
 
-            // Создаём модель заявления
             var application = new Application
             {
                 TypeOfApplicationId = typeOfApplicationId,
                 StartDate = startDate,
                 Description = description,
                 UserId = userId,
-                StatusId = 1 // например, статус "новое"
+                StatusId = 1,
+                AttachedDocuments = new List<Document>()
             };
+
+            // Подтягиваем выбранные документы из БД и добавляем в коллекцию
+            if (attachedDocumentsIds != null && attachedDocumentsIds.Any())
+            {
+                var documents = await _context.Documents
+                                       .Where(d => attachedDocumentsIds.Contains(d.Id) && d.UserId == userId)
+                                       .ToListAsync();
+
+                foreach (var doc in documents)
+                {
+                    application.AttachedDocuments.Add(doc);
+                }
+            }
 
             _context.Applications.Add(application);
             await _context.SaveChangesAsync();
