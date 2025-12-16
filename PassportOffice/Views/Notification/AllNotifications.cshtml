@@ -1,0 +1,33 @@
+﻿@model IEnumerable<Notification>
+
+<h2>Уведомления</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Заголовок</th>
+            <th>Текст</th>
+            <th>Статус</th>
+            <th>Действие</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var notification in Model)
+        {
+            <tr class="@((notification.IsRead) ? "table-secondary" : "table-warning")">
+                <td>@notification.Title</td>
+                <td>@notification.Text</td>
+                <td>@(notification.IsRead ? "Прочитано" : "Непрочитано")</td>
+                <td>
+                    @if (!notification.IsRead)
+                    {
+                        <form asp-action="MarkAsRead" method="post" style="display:inline">
+                            <input type="hidden" name="id" value="@notification.Id" />
+                            <button class="btn btn-sm btn-primary" type="submit">Отметить прочитанным</button>
+                        </form>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

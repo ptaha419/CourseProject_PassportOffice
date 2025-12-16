@@ -190,25 +190,31 @@ namespace PassportOffice.Controllers
 
             if (!IsEmployee(currentUser))
             {
-                // Обычный пользователь может редактировать только свои заявки со статусом 1
                 if (existingApplication.UserId != userId || existingApplication.StatusId != 1)
                 {
                     return Forbid();
                 }
-
-                // Редактируем только Description и StartDate
                 existingApplication.Description = model.Description;
                 existingApplication.StartDate = model.StartDate;
-                // Не меняем StatusId, EndDate, ApplicationReview
             }
             else
             {
-                // Сотрудник может менять StatusId, EndDate, ApplicationReview, а также описание и дату
                 existingApplication.StatusId = model.StatusId;
                 existingApplication.EndDate = model.EndDate;
                 existingApplication.ApplicationReview = model.ApplicationReview;
-                //existingApplication.Description = model.Description;
-                //existingApplication.StartDate = model.StartDate;
+                // При необходимости можно также обновлять описание и дату
+                // existingApplication.Description = model.Description;
+                // existingApplication.StartDate = model.StartDate;
+
+                // Создаём уведомление для пользователя, который создал заявление
+                var notification = new Notification
+                {
+                    Title = "Заявление изменено сотрудником",
+                    Text = $"Ваше заявление #{existingApplication.Id} было изменено сотрудником.",
+                    ApplicationId = existingApplication.Id,
+                    UserId = existingApplication.UserId  // уведомляем автора заявления
+                };
+                _context.Notifications.Add(notification);
             }
 
             _context.Applications.Update(existingApplication);
