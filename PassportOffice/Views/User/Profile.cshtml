@@ -1,0 +1,26 @@
+﻿@model PassportOffice.Models.User
+
+<h2>Профиль пользователя</h2>
+
+<div>
+    <p><strong>Фамилия:</strong> @Model.Surname</p>
+    <p><strong>Имя:</strong> @Model.Name</p>
+    <p><strong>Отчество:</strong> @Model.MiddleName</p>
+    <p><strong>Дата рождения:
+        </strong> @Model.BirthDate.ToShortDateString()
+    </p>
+    <p><strong>Пол:</strong> @Model.Gender</p>
+    <p><strong>Телефон:</strong> @Model.PhoneNumber</p>
+    <p><strong>Email:</strong> @Model.Email</p>
+    <p><strong>Место рождения:</strong> @Model.BirthPlace</p>
+    <p><strong>ИНН:</strong> @Model.TaxPayerNumber</p>
+    <p><strong>Адрес регистрации:</strong> @Model.RegistrationAddress</p>
+    <p><strong>Должность:</strong> @Model.Position</p>
+    <p><strong>Отдел:</strong> @Model.Department?.Name</p>
+@*     @if (!string.IsNullOrEmpty(Model.Photo))
+    {
+        <img src="@Url.Content(Model.Photo)" alt="Фото пользователя" style="max-width:150px;" />
+    } *@
+</div>
+
+<a asp-action="Edit" class="btn btn-primary">Редактировать профиль</a>

@@ -126,5 +126,90 @@ namespace PassportOffice.Controllers
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Login", "User");
         }
+
+        // GET: User/Profile - просмотр профиля текущего пользователя
+        public async Task<IActionResult> Profile()
+        {
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userIdString))
+                return Unauthorized();
+
+            var userId = Guid.Parse(userIdString);
+            var user = await _context.Users
+                .Include(u => u.Role)
+                .Include(u => u.Department)
+                .FirstOrDefaultAsync(u => u.Id == userId);
+
+            if (user == null)
+                return NotFound();
+
+            return View(user);
+        }
+
+        // GET: User/Edit - форма редактирования профиля
+        public async Task<IActionResult> Edit()
+        {
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userIdString))
+                return Unauthorized();
+
+            ViewBag.Departments = await _context.Departments.ToListAsync();
+
+            var userId = Guid.Parse(userIdString);
+            var user = await _context.Users.FindAsync(userId);
+
+            if (user == null)
+                return NotFound();
+
+            return View(user);
+        }
+
+        // POST: User/Edit - сохранение изменений
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(User model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            ViewBag.Departments = await _context.Departments.ToListAsync();
+
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userIdString))
+                return Unauthorized();
+
+            var userId = Guid.Parse(userIdString);
+            var user = await _context.Users.FindAsync(userId);
+
+            if (user == null)
+                return NotFound();
+
+            // Обновляем поля (без пароля - если нужна смена пароля отдельный метод)
+            user.Surname = model.Surname;
+            user.MiddleName = model.MiddleName;
+            user.Name = model.Name;
+            user.BirthDate = model.BirthDate;
+            user.Gender = model.Gender;
+            user.PhoneNumber = model.PhoneNumber;
+            user.Email = model.Email;
+            user.BirthPlace = model.BirthPlace;
+            user.TaxPayerNumber = model.TaxPayerNumber;
+            user.RegistrationAddress = model.RegistrationAddress;
+            //user.Photo = model.Photo;
+            user.Position = model.Position;
+            //user.DepartmentId = model.DepartmentId;
+
+            try
+            {
+                _context.Update(user);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Profile));
+            }
+            catch (DbUpdateException)
+            {
+                ModelState.AddModelError("", "Ошибка при сохранении данных");
+                return View(model);
+            }
+        }
     }
 }
