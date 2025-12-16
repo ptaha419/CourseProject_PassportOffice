@@ -55,5 +55,23 @@ namespace PassportOffice.Controllers
                 return View(documentModel);
             }
         }
+
+        [HttpGet]
+        public async Task<IActionResult> UserDocuments()
+        {
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (string.IsNullOrEmpty(userIdString))
+                return Unauthorized();
+
+            Guid userId = Guid.Parse(userIdString);
+
+            var documents = await _context.Documents
+                .Where(d => d.UserId == userId)
+                .Include(d => d.TypeOfDocument) // если нужно показать название типа документа
+                .ToListAsync();
+
+            return View(documents);
+        }
     }
 }

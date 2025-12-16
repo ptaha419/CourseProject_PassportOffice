@@ -1,0 +1,44 @@
+﻿@model IEnumerable<PassportOffice.Models.Document>
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Мои документы";
+}
+
+<h1>Мои документы</h1>
+
+<p>
+    <a asp-action="AddDocument" class="btn btn-primary">Добавить документ</a>
+</p>
+
+@if (!Model.Any())
+{
+    <p>У вас нет добавленных документов.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Тип документа</th>
+                <th>Номер</th>
+                <th>Орган выдачи</th>
+                <th>Начало действия</th>
+                <th>Окончание действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var doc in Model)
+            {
+                <tr>
+                    <td>@doc.TypeOfDocument?.Name</td>
+                    <td>@doc.Number</td>
+                    <td>@doc.Authority</td>
+                    <td>@doc.StartDate.ToString("dd.MM.yyyy")</td>
+                    <td>@doc.EndDate.ToString("dd.MM.yyyy")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+} 
+
