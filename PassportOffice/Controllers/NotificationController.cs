@@ -50,5 +50,29 @@ namespace PassportOffice.Controllers
 
             return RedirectToAction("AllNotifications");
         }
+
+        [Authorize]
+        public async Task<IActionResult> Details(int id)
+        {
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userIdString))
+                return Unauthorized();
+
+            var notification = await _context.Notifications
+                .Include(n => n.Application)
+                    .ThenInclude(a => a.TypeOfApplication)
+                .Include(n => n.Application)
+                    .ThenInclude(a => a.Status)
+                .Include(n => n.User)   // если уведомление содержит связь с сотрудником
+                .FirstOrDefaultAsync(n => n.Id == id);
+
+            if (notification == null)
+                return NotFound();
+
+            if (notification.UserId != Guid.Parse(userIdString))
+                return Forbid();
+
+            return View(notification);
+        }
     }
 }

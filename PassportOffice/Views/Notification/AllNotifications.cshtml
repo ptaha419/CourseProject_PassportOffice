@@ -15,7 +15,11 @@
         @foreach (var notification in Model)
         {
             <tr class="@((notification.IsRead) ? "table-secondary" : "table-warning")">
-                <td>@notification.Title</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@notification.Id">
+                        @notification.Title
+                    </a>
+                </td>
                 <td>@notification.Text</td>
                 <td>@(notification.IsRead ? "Прочитано" : "Непрочитано")</td>
                 <td>

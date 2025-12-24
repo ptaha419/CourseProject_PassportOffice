@@ -1,0 +1,16 @@
+﻿@model Notification
+
+<h2>@Model.Title</h2>
+
+<p>@Model.Text</p>
+
+<p><strong>Связь с заявлением №</strong> @Model.ApplicationId</p>
+
+<p><strong>Тип заявления:</strong> @Model.Application?.TypeOfApplication?.Name</p>
+<p><strong>Статус заявления:</strong> @Model.Application?.Status?.Name</p>
+<p><strong>Решение по заявлению:</strong> @Model.Application?.ApplicationReview?</p> 
+@* <p><strong>Сотрудник:</strong> @Model.UserId != null ? $"{Model.User.Surname} {Model.User.MiddleName} {Model.User.Name}" : "Нет данных"</p> *@
+
+<p><strong>Статус уведомления:</strong> @(Model.IsRead ? "Прочитано" : "Непрочитано")</p>
+
+<a asp-action="AllNotifications">Назад к уведомлениям</a>
