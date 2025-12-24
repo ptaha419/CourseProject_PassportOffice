@@ -17,17 +17,17 @@
                 <span asp-validation-for="Surname" />
             </div>
             <div>
-                <label asp-for="MiddleName">Отчество:</label><br />
-                <input type="text" asp-for="MiddleName" />
-                <span asp-validation-for="MiddleName" />
-            </div>
-            <div>
                 <label asp-for="Name">Имя:</label><br />
                 <input type="text" asp-for="Name" />
                 <span asp-validation-for="Name" />
             </div>
             <div>
-                <label asp-for="BirthDate">Отчество:</label><br />
+                <label asp-for="MiddleName">Отчество:</label><br />
+                <input type="text" asp-for="MiddleName" />
+                <span asp-validation-for="MiddleName" />
+            </div>
+            <div>
+                <label asp-for="BirthDate">Дата рождения:</label><br />
                 <input type="date" asp-for="BirthDate" />
                 <span asp-validation-for="BirthDate" />
             </div>
@@ -72,10 +72,9 @@
                 <input asp-for="ConfirmPassword" />
                 <span asp-validation-for="ConfirmPassword" />
             </div>
-            <div>
-                <label asp-for="RoleId">Роль:</label><br />
-                <input type="number" asp-for="RoleId" />
-                <span asp-validation-for="RoleId" />
+            <div> 
+                <label asp-for="RoleId">Выберите роль пользователя (цель регистрации):</label><br />
+                @Html.DropDownList("roleId", new SelectList((IEnumerable<Role>)ViewData["Roles"], "Id", "Name"), "-- Выберите роль --")
             </div>
             <div class="form-group">
                 <input type="submit" value="Зарегистрироваться" class="btn btn-danger" />

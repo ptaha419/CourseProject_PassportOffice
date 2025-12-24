@@ -52,14 +52,15 @@ namespace PassportOffice.Controllers
         [HttpGet]
         public async Task<IActionResult> Register()
         {
-            //await GetRoles();
+            var roles = _context.Roles.ToList();
+            ViewBag.Roles = roles;
             return View();
         }
 
         //POST: Register
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(RegisterModel model)
+        public async Task<IActionResult> Register(RegisterModel model, int roleId)
         {
             if (ModelState.IsValid)
             {
@@ -78,7 +79,7 @@ namespace PassportOffice.Controllers
                         PhoneNumber = model.PhoneNumber,
                         Email = model.Email,
                         Password = model.Password,
-                        RoleId = model.RoleId,
+                        RoleId = roleId,
                         BirthPlace = model.BirthPlace, 
                         TaxPayerNumber = model.TaxPayerNumber,
                         RegistrationAddress = model.RegistrationAddress
@@ -87,9 +88,9 @@ namespace PassportOffice.Controllers
 
                     await _context.SaveChangesAsync();
 
-                    await Authenticate(model.Email, user.Id);
+                    //await Authenticate(model.Email, user.Id);
 
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Login", "User");
                 }
                 else
                     ModelState.AddModelError("", "Некорректные логин и/или пароль");
