@@ -40,11 +40,11 @@ namespace PassportOffice.Controllers
                 Guid userId = Guid.Parse(userIdString); // Преобразуем строку идентификатора в GUID
 
                 // Проверяем, не зарегистрировано ли уже у пользователя такой же тип документа
-                bool isDuplicate = _context.Documents.Any(d => d.UserId == userId && d.TypeOfDocumentId == documentModel.TypeOfDocumentId);
+                bool isDuplicate = _context.Documents.Any(d => d.UserId == userId && d.Number == documentModel.Number);
 
                 if (isDuplicate)
                 {
-                    ModelState.AddModelError("", "Такой тип документа уже зарегистрирован у вас.");
+                    ModelState.AddModelError("", "Документ с таким номером уже зарегистрирован у вас.");
                     ViewBag.TypesOfDocument = _context.TypesOfDocument.ToList(); // Загружаем повторно типы документов
                     return View(documentModel);
                 }
