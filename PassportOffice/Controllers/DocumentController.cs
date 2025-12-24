@@ -20,7 +20,7 @@ namespace PassportOffice.Controllers
         [HttpGet]
         public IActionResult AddDocument()
         {
-            ViewBag.TypeOfDocuments = _context.TypesOfDocument.ToList(); // Типы документов передаются в представление
+            ViewBag.TypesOfDocument = _context.TypesOfDocument.ToList(); // Типы документов передаются в представление
             return View();
         }
 
@@ -30,7 +30,7 @@ namespace PassportOffice.Controllers
         {
             var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier); // Получаем идентификатор текущего пользователя
 
-            if (string.IsNullOrEmpty(userIdString)) // Проверяем наличие идентификатора
+            if (string.IsNullOrEmpty(userIdString))
             {
                 return Unauthorized();
             }
@@ -39,13 +39,23 @@ namespace PassportOffice.Controllers
             {
                 Guid userId = Guid.Parse(userIdString); // Преобразуем строку идентификатора в GUID
 
+                // Проверяем, не зарегистрировано ли уже у пользователя такой же тип документа
+                bool isDuplicate = _context.Documents.Any(d => d.UserId == userId && d.TypeOfDocumentId == documentModel.TypeOfDocumentId);
+
+                if (isDuplicate)
+                {
+                    ModelState.AddModelError("", "Такой тип документа уже зарегистрирован у вас.");
+                    ViewBag.TypesOfDocument = _context.TypesOfDocument.ToList(); // Загружаем повторно типы документов
+                    return View(documentModel);
+                }
+
                 documentModel.UserId = userId;
 
                 // Добавляем новый документ в базу данных
                 _context.Documents.Add(documentModel);
                 await _context.SaveChangesAsync();
 
-                return RedirectToAction("Index"); // Перенаправляем на список всех документов
+                return RedirectToAction("UserDocuments"); // Перенаправляем на список всех документов
             }
             catch (Exception ex)
             {
