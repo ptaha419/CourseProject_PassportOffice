@@ -59,7 +59,7 @@
 
                     @if (ViewBag.CurrentUserRoleId == 1 && item.StatusId == 1)
                     {
-                        <a href="/Application/Edit/@item.Id" class="btn btn-sm btn-info">Редактировать</a>
+                        <a href="/Application/Edit/@item.Id" class="btn btn-sm btn-warning">Редактировать</a>
                         <form asp-action="Delete" asp-controller="Application" method="post" style="display:inline" onsubmit="return confirm('Удалить заявление?');">
                             <input type="hidden" name="id" value="@item.Id" />
                             <button type="submit" class="btn btn-sm btn-danger">Удалить</button>

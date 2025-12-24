@@ -90,10 +90,6 @@ namespace PassportOffice.Controllers
             ViewBag.Types = types;
         }
 
-        // Статус заявления по умолчанию "Новое"
-        //private async Task<int> GetDefaultStatusId() =>
-        //    (await _context.Statuses.FirstOrDefaultAsync())?.Id ?? 0;
-
         [HttpGet]
         public IActionResult RedirectToMakeApplication()
         {
@@ -183,6 +179,11 @@ namespace PassportOffice.Controllers
 
             // Получаем все статусы для выпадающего списка
             ViewBag.StatusList = await _context.Statuses.ToListAsync();
+
+            ViewBag.UserDocuments = await _context.Documents
+                .Include(d => d.TypeOfDocument)
+                .Where(d => d.UserId == userId)
+                .ToListAsync();
 
             return View(application);
         }

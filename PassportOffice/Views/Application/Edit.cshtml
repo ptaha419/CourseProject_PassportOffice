@@ -52,13 +52,13 @@
                 {
                     <div class="form-group mb-3">
                         <label for="Description" class="form-label fw-bold">Текст заявления</label>
-                        <textarea rows="4" cols="50" id="Description" name="Description" class="form-control"></textarea>
+                        <textarea rows="4" cols="50" id="Description" name="Description" class="form-control" required></textarea>
                         <span asp-validation-for="Description" class="text-danger small"></span>
                     </div>
 
                     <div class="form-group mb-3">
                         <label for="attachedDocuments">Прикрепить документы:</label>
-                        <select id="attachedDocuments" name="attachedDocumentsIds" class="custom-select form-control" size="1" multiple required>
+                        <select id="attachedDocuments" name="attachedDocumentsIds" class="custom-select form-control" size="1" multiple>
                             @{
                                 foreach (var doc in ViewBag.UserDocuments as List<Document>)
                                 {
