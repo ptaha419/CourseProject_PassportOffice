@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -128,6 +129,7 @@ namespace PassportOffice.Controllers
         }
 
         // GET: User/Profile - просмотр профиля текущего пользователя
+        [Authorize]
         public async Task<IActionResult> Profile()
         {
             var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);

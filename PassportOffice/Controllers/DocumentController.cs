@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -23,7 +24,6 @@ namespace PassportOffice.Controllers
             return View();
         }
 
-        // POST: /Documents/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddDocument(Document documentModel)
@@ -39,7 +39,6 @@ namespace PassportOffice.Controllers
             {
                 Guid userId = Guid.Parse(userIdString); // Преобразуем строку идентификатора в GUID
 
-                // Заполняем внешний ключ на пользователя
                 documentModel.UserId = userId;
 
                 // Добавляем новый документ в базу данных
@@ -56,6 +55,7 @@ namespace PassportOffice.Controllers
             }
         }
 
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> UserDocuments()
         {
@@ -68,7 +68,7 @@ namespace PassportOffice.Controllers
 
             var documents = await _context.Documents
                 .Where(d => d.UserId == userId)
-                .Include(d => d.TypeOfDocument) // если нужно показать название типа документа
+                .Include(d => d.TypeOfDocument) 
                 .ToListAsync();
 
             return View(documents);

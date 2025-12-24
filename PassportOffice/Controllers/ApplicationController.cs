@@ -211,7 +211,7 @@ namespace PassportOffice.Controllers
             }
 
             if (!IsEmployee(currentUser))
-            {
+            { 
                 if (existingApplication.UserId != userId || existingApplication.StatusId != 1)
                 {
                     return Forbid();
@@ -224,7 +224,6 @@ namespace PassportOffice.Controllers
                 existingApplication.StatusId = model.StatusId;
                 existingApplication.EndDate = model.EndDate;
                 existingApplication.ApplicationReview = model.ApplicationReview;
-                // При необходимости можно также обновлять описание и дату
                 // existingApplication.Description = model.Description;
                 // existingApplication.StartDate = model.StartDate;
 
