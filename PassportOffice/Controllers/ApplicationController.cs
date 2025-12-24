@@ -32,8 +32,10 @@ namespace PassportOffice.Controllers
                 .Include(d => d.TypeOfDocument)
                 .ToListAsync();
 
+            var typesOfApplication = _context.TypesOfApplication.ToList();
+
             ViewBag.Id = id;
-            ViewBag.TypeOfApplicationId = typeOfApplicationId;
+            ViewBag.TypesOfApplication = typesOfApplication;
             ViewBag.StatusId = statusId;
             ViewBag.StartDate = startDate;
             ViewBag.Description = description;
@@ -66,16 +68,18 @@ namespace PassportOffice.Controllers
             };
 
             // Подтягиваем выбранные документы из БД и добавляем в коллекцию
-            if (attachedDocumentsIds != null && attachedDocumentsIds.Any())
+            if (attachedDocumentsIds?.Any() == true)
             {
                 var documents = await _context.Documents
-                                       .Where(d => attachedDocumentsIds.Contains(d.Id) && d.UserId == userId)
-                                       .ToListAsync();
+                    .Where(d => attachedDocumentsIds.Contains(d.Id))
+                    .ToListAsync();
 
                 foreach (var doc in documents)
                 {
-                    application.AttachedDocuments.Add(doc);
+                    doc.ApplicationId = application.Id;
                 }
+
+                await _context.SaveChangesAsync();
             }
 
             _context.Applications.Add(application);

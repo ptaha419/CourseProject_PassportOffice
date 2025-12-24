@@ -60,7 +60,7 @@ namespace PassportOffice.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Applications");
+                    b.ToTable("Applications", (string)null);
                 });
 
             modelBuilder.Entity("PassportOffice.Models.Department", b =>
@@ -92,7 +92,7 @@ namespace PassportOffice.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Departments");
+                    b.ToTable("Departments", (string)null);
                 });
 
             modelBuilder.Entity("PassportOffice.Models.Document", b =>
@@ -133,7 +133,7 @@ namespace PassportOffice.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Documents");
+                    b.ToTable("Documents", (string)null);
                 });
 
             modelBuilder.Entity("PassportOffice.Models.Notification", b =>
@@ -167,7 +167,7 @@ namespace PassportOffice.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Notifications");
+                    b.ToTable("Notifications", (string)null);
                 });
 
             modelBuilder.Entity("PassportOffice.Models.Role", b =>
@@ -184,7 +184,7 @@ namespace PassportOffice.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles");
+                    b.ToTable("Roles", (string)null);
                 });
 
             modelBuilder.Entity("PassportOffice.Models.Status", b =>
@@ -201,7 +201,7 @@ namespace PassportOffice.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Statuses");
+                    b.ToTable("Statuses", (string)null);
                 });
 
             modelBuilder.Entity("PassportOffice.Models.TypeOfApplication", b =>
@@ -218,7 +218,7 @@ namespace PassportOffice.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TypesOfApplication");
+                    b.ToTable("TypesOfApplication", (string)null);
                 });
 
             modelBuilder.Entity("PassportOffice.Models.TypeOfDocument", b =>
@@ -235,7 +235,7 @@ namespace PassportOffice.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TypesOfDocument");
+                    b.ToTable("TypesOfDocument", (string)null);
                 });
 
             modelBuilder.Entity("PassportOffice.Models.User", b =>
@@ -341,7 +341,7 @@ namespace PassportOffice.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("PassportOffice.Models.Application", b =>

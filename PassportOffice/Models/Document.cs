@@ -13,8 +13,7 @@ namespace PassportOffice.Models
         public int TypeOfDocumentId { get; set; }
         public virtual TypeOfDocument TypeOfDocument { get; set; }
 
-        [Required]
-        public int Number { get; set; }
+        public int? Number { get; set; }
         [Required]
         public string Authority { get; set; }
         public DateTime StartDate { get; set; }
@@ -23,6 +22,10 @@ namespace PassportOffice.Models
         [ForeignKey(nameof(User))]
         public Guid UserId { get; set; }
         public virtual User User { get; set; }
+
+        [ForeignKey(nameof(Application))]
+        public int? ApplicationId { get; set; }
+        public virtual Application Application { get; set; } 
     }
 }
 
