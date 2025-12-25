@@ -11,12 +11,12 @@ namespace PassportOffice.Controllers
     public class ApplicationController : Controller
     {
         private WebAppDbContext _context;
-        private readonly IEnumerable<Status> _statuses;
+        public IEnumerable<Status> Statuses;
 
         public ApplicationController(WebAppDbContext context)
         {
             _context = context;
-            _statuses = _context.Statuses.ToList();
+            this.Statuses = _context.Statuses.ToList();
         }
 
         [HttpGet]
