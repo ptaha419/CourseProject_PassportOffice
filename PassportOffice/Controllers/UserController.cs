@@ -20,14 +20,14 @@ namespace PassportOffice.Controllers
             _context = context;
         }
 
-        //GET: Login
+        //GET: User/Login - форма авторизации пользователя 
         [HttpGet]
         public IActionResult Login()
         {
             return View();
         }
 
-        //POST: Login
+        //POST: User/Login - вход пользователя в систему
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginModel model)
@@ -48,7 +48,7 @@ namespace PassportOffice.Controllers
             return View(model);
         }
 
-        //GET: Register
+        //GET: User/Register - форма регистрации пользователя
         [HttpGet]
         public async Task<IActionResult> Register()
         {
@@ -57,7 +57,7 @@ namespace PassportOffice.Controllers
             return View();
         }
 
-        //POST: Register
+        //POST: User/Register - регистрация пользователя 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterModel model, int roleId)
@@ -99,6 +99,7 @@ namespace PassportOffice.Controllers
             return View(model);
         }
 
+        // Authenticate - аутентификация пользователя
         private async Task Authenticate(string userName, Guid userId)
         {
             var claims = new List<Claim>
@@ -112,17 +113,7 @@ namespace PassportOffice.Controllers
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id));
         }
 
-        //private async Task GetRoles()
-        //{
-        //    var roles = await _context.Roles.Select(r => new SelectListItem
-        //    {
-        //        Value = r.Id.ToString(),      // Значение (id роли)
-        //        Text = r.Name                 // Название роли
-        //    }).ToListAsync();
-
-        //    ViewBag.Roles = roles;
-        //}
-
+        // Logout - выход из аккаунта
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
@@ -131,6 +122,7 @@ namespace PassportOffice.Controllers
 
         // GET: User/Profile - просмотр профиля текущего пользователя
         [Authorize]
+        [HttpGet]
         public async Task<IActionResult> Profile()
         {
             var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -149,7 +141,8 @@ namespace PassportOffice.Controllers
             return View(user);
         }
 
-        // GET: User/Edit - форма редактирования профиля
+        // GET: User/Edit - форма редактирования профиля 
+        [HttpGet]
         public async Task<IActionResult> Edit()
         {
             var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -187,7 +180,7 @@ namespace PassportOffice.Controllers
             if (user == null)
                 return NotFound();
 
-            // Обновляем поля (без пароля - если нужна смена пароля отдельный метод)
+            // Обновляем поля 
             user.Surname = model.Surname;
             user.MiddleName = model.MiddleName;
             user.Name = model.Name;

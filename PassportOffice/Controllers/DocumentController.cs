@@ -20,7 +20,7 @@ namespace PassportOffice.Controllers
         [HttpGet]
         public IActionResult AddDocument()
         {
-            ViewBag.TypesOfDocument = _context.TypesOfDocument.ToList(); // Типы документов передаются в представление
+            ViewBag.TypesOfDocument = _context.TypesOfDocument.ToList(); 
             return View();
         }
 
@@ -28,7 +28,7 @@ namespace PassportOffice.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddDocument(Document documentModel)
         {
-            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier); // Получаем идентификатор текущего пользователя
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier); 
 
             if (string.IsNullOrEmpty(userIdString))
             {
@@ -37,7 +37,7 @@ namespace PassportOffice.Controllers
 
             try
             {
-                Guid userId = Guid.Parse(userIdString); // Преобразуем строку идентификатора в GUID
+                Guid userId = Guid.Parse(userIdString); 
 
                 // Проверяем, не зарегистрировано ли уже у пользователя такой же тип документа
                 bool isDuplicate = _context.Documents.Any(d => d.UserId == userId && d.Number == documentModel.Number);
@@ -45,13 +45,12 @@ namespace PassportOffice.Controllers
                 if (isDuplicate)
                 {
                     ModelState.AddModelError("", "Документ с таким номером уже зарегистрирован у вас.");
-                    ViewBag.TypesOfDocument = _context.TypesOfDocument.ToList(); // Загружаем повторно типы документов
+                    ViewBag.TypesOfDocument = _context.TypesOfDocument.ToList(); 
                     return View(documentModel);
                 }
 
                 documentModel.UserId = userId;
 
-                // Добавляем новый документ в базу данных
                 _context.Documents.Add(documentModel);
                 await _context.SaveChangesAsync();
 
@@ -60,7 +59,7 @@ namespace PassportOffice.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("", "Ошибка при создании документа." + ex.Message);
-                ViewBag.TypesOfDocument = _context.TypesOfDocument.ToList(); // Повторно загружаем типы документов
+                ViewBag.TypesOfDocument = _context.TypesOfDocument.ToList(); 
                 return View(documentModel);
             }
         }

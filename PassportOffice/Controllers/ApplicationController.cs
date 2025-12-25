@@ -67,7 +67,6 @@ namespace PassportOffice.Controllers
                 AttachedDocuments = new List<Document>()
             };
 
-            // Подтягиваем выбранные документы из БД и добавляем в коллекцию
             if (attachedDocumentsIds?.Any() == true)
             {
                 var documents = await _context.Documents
@@ -109,14 +108,12 @@ namespace PassportOffice.Controllers
         [HttpGet]
         public async Task<IActionResult> AllApplications(int? statusId, int? typeOfApplicationId)
         {
-            // Получаем текущего пользователя
             var currentUser = await GetCurrentUserAsync(HttpContext.User.Identity.Name);
             ViewBag.CurrentUserRoleId = currentUser.RoleId;
 
-            // Запрашиваем доступные заявки
             IQueryable<Application> applicationsQuery = _context.Applications.AsQueryable();
 
-            // Если пользователь НЕ администратор, фильтруем заявки по его UserId
+            // Если пользователь НЕ сотрудник, фильтруем заявки по его UserId
             if (!IsEmployee(currentUser))
             {
                 applicationsQuery = applicationsQuery.Where(app => app.UserId == currentUser.Id);
@@ -133,13 +130,11 @@ namespace PassportOffice.Controllers
                 applicationsQuery = applicationsQuery.Where(app => app.TypeOfApplicationId == typeOfApplicationId.Value);
             }
 
-            // Выполняем запрос с включёнными зависимостями
             var applications = await applicationsQuery
                 .Include(app => app.Status)
                 .Include(app => app.TypeOfApplication)
                 .ToListAsync();
 
-            // Передача данных в представление
             ViewData["Statuses"] = await _context.Statuses.OrderBy(s => s.Name).ToListAsync();
             ViewData["TypesOfApplication"] = await _context.TypesOfApplication.OrderBy(t => t.Name).ToListAsync();
 
@@ -229,16 +224,14 @@ namespace PassportOffice.Controllers
                 existingApplication.StatusId = model.StatusId;
                 existingApplication.EndDate = model.EndDate;
                 existingApplication.ApplicationReview = model.ApplicationReview;
-                // existingApplication.Description = model.Description;
-                // existingApplication.StartDate = model.StartDate;
 
-                // Создаём уведомление для пользователя, который создал заявление
+                // Создаём уведомление для пользователя, который подал заявление
                 var notification = new Notification
                 {
                     Title = "Заявление изменено сотрудником",
                     Text = $"Ваше заявление #{existingApplication.Id} было изменено сотрудником.",
                     ApplicationId = existingApplication.Id,
-                    UserId = existingApplication.UserId  // уведомляем автора заявления
+                    UserId = existingApplication.UserId  
                 };
                 _context.Notifications.Add(notification);
             }
@@ -253,7 +246,6 @@ namespace PassportOffice.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
-            // Получаем текущего пользователя
             var currentUser = await GetCurrentUserAsync(User.Identity.Name);
 
             if (currentUser == null)
@@ -264,10 +256,10 @@ namespace PassportOffice.Controllers
             // Проверяем, что у пользователя RoleId == 1
             if (currentUser.RoleId != 1)
             {
-                return Forbid(); // Доступ запрещён
+                return Forbid();
             }
 
-            // Получаем заявление по id
+
             var application = await _context.Applications.FindAsync(id);
             if (application == null)
             {
@@ -280,10 +272,9 @@ namespace PassportOffice.Controllers
                 return Forbid(); // Доступ запрещён, если статус не "Новое"
             }
 
-            // Проверяем, что заявление принадлежит текущему пользователю
             if (application.UserId != currentUser.Id)
             {
-                return Forbid(); // Доступ запрещён, если не владелец
+                return Forbid(); 
             }
 
             _context.Applications.Remove(application);

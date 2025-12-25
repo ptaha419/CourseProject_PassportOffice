@@ -15,12 +15,11 @@
     <p><strong>Место рождения:</strong> @Model.BirthPlace</p>
     <p><strong>ИНН:</strong> @Model.TaxPayerNumber</p>
     <p><strong>Адрес регистрации:</strong> @Model.RegistrationAddress</p>
-    <p><strong>Должность:</strong> @Model.Position</p>
-    <p><strong>Отдел:</strong> @Model.Department?.Name</p>
-@*     @if (!string.IsNullOrEmpty(Model.Photo))
+    @if (Model.RoleId == 2)
     {
-        <img src="@Url.Content(Model.Photo)" alt="Фото пользователя" style="max-width:150px;" />
-    } *@
+        <p><strong>Должность:</strong> @Model.Position</p>
+        <p><strong>Отдел:</strong> @Model.Department?.Name</p>
+    }
 </div>
 
-<a asp-action="Edit" class="btn btn-primary">Редактировать профиль</a>
+@* <a asp-action="Edit" class="btn btn-primary">Редактировать профиль</a> *@

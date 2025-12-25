@@ -63,7 +63,7 @@ namespace PassportOffice.Controllers
                     .ThenInclude(a => a.TypeOfApplication)
                 .Include(n => n.Application)
                     .ThenInclude(a => a.Status)
-                .Include(n => n.User)   // если уведомление содержит связь с сотрудником
+                .Include(n => n.User)   
                 .FirstOrDefaultAsync(n => n.Id == id);
 
             if (notification == null)
